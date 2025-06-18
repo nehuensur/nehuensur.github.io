@@ -1,146 +1,153 @@
 <!DOCTYPE html><html lang="es"><head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nehuen Sur Inmobiliaria</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>Rehuen Sur Inmobiliaria</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
-      padding-top: 56px;
+      padding-bottom: 80px;
     }
     header {
       background-image: url('img/Gemini_Generated_Image_lbdtz9lbdtz9lbdt.png');
       background-size: cover;
       background-position: center;
       color: white;
-      padding: 4rem 2rem;
+      padding: 40px 20px;
       text-align: center;
       position: relative;
     }
     header img.logo {
       position: absolute;
-      top: 1rem;
-      left: 1rem;
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
+      top: 20px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
       background-color: white;
-      border-radius: 12px;
-      padding: 4px;
+      padding: 5px;
     }
     footer {
-      background-color: #343a40;
-      color: white;
-      text-align: center;
-      padding: 1rem;
       position: fixed;
       bottom: 0;
       width: 100%;
+      background-color: #343a40;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
     }
     .property-card {
-      margin-bottom: 2rem;
-    }
-    .map-modal {
-      width: 100%;
-      height: 400px;
+      margin-bottom: 30px;
     }
   </style>
 </head><body>
   <header>
-    <img src="img/file_00000000745c61f8ae79ef54722fb16a.png" class="logo" alt="Logo Nehuen Sur">
-    <h1>Nehuen Sur Inmobiliaria</h1>
-    <p>Especialistas en alquileres temporarios de calidad en todo el país. Conectamos personas con propiedades ideales para vacaciones, viajes de trabajo o escapadas de fin de semana.</p>
-  </header>  <main class="container mt-4">
+    <img src="img/file_00000000745c61f8ae79ef54722fb16a.png" alt="Logo" class="logo" />
+    <h1>Rehuen Sur Inmobiliaria</h1>
+    <p>Expertos en alquileres temporarios en los rincones más hermosos de Argentina. Te ayudamos a encontrar tu lugar ideal para descansar, vacacionar o trabajar.</p>
+  </header>  <div class="container mt-4">
     <ul class="nav nav-tabs" id="propertyTabs" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="deptos-tab" data-bs-toggle="tab" data-bs-target="#deptos" type="button" role="tab">Departamentos</button>
+        <button class="nav-link active" id="departments-tab" data-bs-toggle="tab" data-bs-target="#departments" type="button" role="tab">Departamentos</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="cabanas-tab" data-bs-toggle="tab" data-bs-target="#cabanas" type="button" role="tab">Cabañas</button>
+        <button class="nav-link" id="cabins-tab" data-bs-toggle="tab" data-bs-target="#cabins" type="button" role="tab">Cabañas</button>
       </li>
-    </ul>
-    <div class="tab-content" id="propertyTabsContent">
-      <div class="tab-pane fade show active" id="deptos" role="tabpanel">
-        <div class="row mt-4">
-          <!-- DEPARTAMENTOS -->
-          <!-- Aquí se insertan 5 departamentos -->
-          <!-- Reutilizaré una estructura similar para cada uno -->
-          <div class="col-md-6 property-card">
-            <div class="card">
-              <div id="carouselDepto1" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                  <div class="carousel-item active"><img src="img/depto1_1.jpg" class="d-block w-100" alt="Depto 1"></div>
-                  <div class="carousel-item"><img src="img/depto1_2.jpg" class="d-block w-100" alt="Depto 1"></div>
-                  <div class="carousel-item"><img src="img/depto1_3.jpg" class="d-block w-100" alt="Depto 1"></div>
-                </div>
+    </ul><div class="tab-content" id="propertyTabsContent">
+  <div class="tab-pane fade show active" id="departments" role="tabpanel">
+    <div class="row">
+      <!-- Departamento 1 -->
+      <div class="col-md-6 property-card">
+        <div class="card">
+          <div id="carouselDept1" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="https://source.unsplash.com/800x600/?apartment,city" class="d-block w-100" alt="Depto 1">
               </div>
-              <div class="card-body">
-                <h5 class="card-title">Departamento en Palermo, CABA</h5>
-                <p class="card-text">Moderno departamento 2 ambientes. Excelente ubicación cerca del subte y parques. Ideal para turistas.</p>
-                <p><strong>Precio por noche:</strong> $28.000</p>
-                <button class="btn btn-outline-primary" onclick="openMapModal(-34.5825, -58.4265, 'Palermo, CABA')">Ver ubicación</button>
+              <div class="carousel-item">
+                <img src="https://source.unsplash.com/800x600/?living-room" class="d-block w-100" alt="Depto 1 living">
+              </div>
+              <div class="carousel-item">
+                <img src="https://source.unsplash.com/800x600/?kitchen" class="d-block w-100" alt="Depto 1 cocina">
               </div>
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDept1" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDept1" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </button>
           </div>
-          <!-- Agregar más departamentos similares -->
+          <div class="card-body">
+            <h5 class="card-title">Departamento en Mendoza Capital</h5>
+            <p class="card-text">2 ambientes, totalmente amoblado, con balcón. Ideal para turismo o trabajo remoto. Capacidad 3 personas.</p>
+            <button class="btn btn-outline-primary" onclick="showMap(-32.8908, -68.8272, 'Departamento en Mendoza Capital')">Ver ubicación</button>
+          </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="cabanas" role="tabpanel">
-        <div class="row mt-4">
-          <!-- CABAÑAS -->
-          <div class="col-md-6 property-card">
-            <div class="card">
-              <div id="carouselCabana1" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                  <div class="carousel-item active"><img src="img/cabana1_1.jpg" class="d-block w-100" alt="Cabaña 1"></div>
-                  <div class="carousel-item"><img src="img/cabana1_2.jpg" class="d-block w-100" alt="Cabaña 1"></div>
-                  <div class="carousel-item"><img src="img/cabana1_3.jpg" class="d-block w-100" alt="Cabaña 1"></div>
-                </div>
-              </div>
-              <div class="card-body">
-                <h5 class="card-title">Cabaña en Villa La Angostura</h5>
-                <p class="card-text">Encantadora cabaña de troncos a metros del lago Nahuel Huapi. Rodeada de bosque nativo.</p>
-                <p><strong>Precio por noche:</strong> $35.000</p>
-                <button class="btn btn-outline-primary" onclick="openMapModal(-40.7611, -71.6463, 'Villa La Angostura')">Ver ubicación</button>
-              </div>
-            </div>
-          </div>
-          <!-- Agregar más cabañas similares -->
-        </div>
-      </div>
+
+      <!-- Departamentos 2 a 5 -->
+      <!-- Puedes duplicar el bloque anterior y cambiar los textos, imágenes, y coordenadas geográficas -->
     </div>
-  </main>  <!-- Modal para mapa -->  <div class="modal fade" id="mapModal" tabindex="-1" aria-hidden="true">
+  </div>
+
+  <div class="tab-pane fade" id="cabins" role="tabpanel">
+    <div class="row">
+      <!-- Cabaña 1 -->
+      <div class="col-md-6 property-card">
+        <div class="card">
+          <div id="carouselCab1" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="https://source.unsplash.com/800x600/?cabin,forest" class="d-block w-100" alt="Cabaña 1">
+              </div>
+              <div class="carousel-item">
+                <img src="https://source.unsplash.com/800x600/?cabin,interior" class="d-block w-100" alt="Cabaña interior">
+              </div>
+              <div class="carousel-item">
+                <img src="https://source.unsplash.com/800x600/?fireplace" class="d-block w-100" alt="Cabaña chimenea">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselCab1" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselCab1" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </button>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Cabaña en Bariloche</h5>
+            <p class="card-text">Cabaña rústica frente al lago Nahuel Huapi. Capacidad 4 personas. Cocina equipada y estufa a leña.</p>
+            <button class="btn btn-outline-primary" onclick="showMap(-41.1335, -71.3103, 'Cabaña en Bariloche')">Ver ubicación</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cabañas 2 a 5 -->
+      <!-- Puedes duplicar el bloque anterior y cambiar los textos, imágenes, y coordenadas geográficas -->
+    </div>
+  </div>
+</div>
+
+  </div>  <!-- Modal para mapa -->  <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="mapLocationTitle">Ubicación</h5>
+          <h5 class="modal-title" id="mapModalLabel">Ubicación de la propiedad</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          <div id="map" class="map-modal"></div>
+          <iframe id="mapFrame" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
     </div>
   </div>  <footer>
-    <p>📞 +54 9 261 555-1234 | 🌐 @nehuensur.ar | 📸 Instagram / Facebook</p>
-  </footer>  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  <script>
-    let map;
-    let marker;
-
-    function openMapModal(lat, lng, label) {
+    <p>Síguenos en redes sociales | Teléfono: +54 9 261 000-0000</p>
+  </footer>  <script>
+    function showMap(lat, lng, title) {
+      const src = `https://maps.google.com/maps?q=${lat},${lng}&hl=es&z=14&output=embed`;
+      document.getElementById('mapFrame').src = src;
       const modal = new bootstrap.Modal(document.getElementById('mapModal'));
       modal.show();
-      setTimeout(() => {
-        if (!map) {
-          map = L.map('map').setView([lat, lng], 13);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-          }).addTo(map);
-        } else {
-          map.setView([lat, lng], 13);
-          if (marker) marker.remove();
-        }
-        marker = L.marker([lat, lng]).addTo(map).bindPopup(label).openPopup();
-      }, 500);
     }
-  </script></body></html>
+  </script>  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script></body></html>
