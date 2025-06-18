@@ -1,106 +1,209 @@
 <!DOCTYPE html><html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rehuen Sur Inmobiliaria</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
     }
     header {
-      background-color: #1e3d59;
+      background-image: url('img/Gemini_Generated_Image_lbdtz9lbdtz9lbdt.png');
+      background-size: cover;
+      background-position: center;
       color: white;
-      padding: 2rem 1rem;
+      text-shadow: 1px 1px 3px black;
     }
-    .nav-tabs .nav-link.active {
-      background-color: #1e3d59;
-      color: white;
+    .logo {
+      height: 60px;
     }
-    .property {
-      margin-bottom: 2rem;
-    }
-    footer {
-      background-color: #1e3d59;
-      color: white;
-      padding: 1rem;
-    }
-    .carousel-item img {
+    .carousel-inner img {
+      width: 100%;
       height: 300px;
       object-fit: cover;
     }
+    .property-card {
+      margin-bottom: 30px;
+    }
+    footer {
+      background-color: #1e1e2f;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+    .map-modal {
+      width: 100%;
+      height: 400px;
+    }
   </style>
 </head>
-<body>
-  <header class="text-center">
-    <h1>Rehuen Sur Inmobiliaria</h1>
-    <p>Especialistas en alquileres temporarios en los rincones más bellos de Argentina. Descubrí tu próximo destino con confort y calidez.</p>
-  </header>  <div class="container py-4">
-    <ul class="nav nav-tabs mb-3" id="propertyTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="departamentos-tab" data-bs-toggle="tab" data-bs-target="#departamentos" type="button" role="tab">Departamentos</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="cabanas-tab" data-bs-toggle="tab" data-bs-target="#cabanas" type="button" role="tab">Cabañas</button>
-      </li>
-    </ul><div class="tab-content" id="propertyTabsContent">
-  <div class="tab-pane fade show active" id="departamentos" role="tabpanel">
-    <!-- Departamentos -->
-    <div class="property">
-      <h4>Departamento Centro Mendoza</h4>
-      <p><strong>Ubicación:</strong> Ciudad de Mendoza, Mendoza</p>
-      <p>Departamento moderno con 2 habitaciones, cocina equipada y balcón con vista a la ciudad. Ideal para turistas y estadías cortas.</p>
-      <div id="carousel-dpto-1" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active"><img src="https://source.unsplash.com/800x600/?apartment,living" class="d-block w-100" alt=""></div>
-          <div class="carousel-item"><img src="https://source.unsplash.com/800x600/?apartment,kitchen" class="d-block w-100" alt=""></div>
-          <div class="carousel-item"><img src="https://source.unsplash.com/800x600/?apartment,bedroom" class="d-block w-100" alt=""></div>
-          <div class="carousel-item"><img src="https://source.unsplash.com/800x600/?apartment,bathroom" class="d-block w-100" alt=""></div>
-          <div class="carousel-item"><img src="https://source.unsplash.com/800x600/?mendoza,city" class="d-block w-100" alt=""></div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-dpto-1" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carousel-dpto-1" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-        </button>
+<body><header class="p-4 text-center">
+  <img src="img/file_00000000745c61f8ae79ef54722fb16a.png" alt="Logo" class="logo mb-3">
+  <h1>Rehuen Sur Inmobiliaria</h1>
+  <p>Especialistas en alquileres temporarios de departamentos y cabañas en los destinos más hermosos de Argentina.</p>
+</header><div class="container mt-5">
+  <ul class="nav nav-tabs" id="propertyTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="deptos-tab" data-bs-toggle="tab" data-bs-target="#deptos" type="button" role="tab">Departamentos</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="cabanas-tab" data-bs-toggle="tab" data-bs-target="#cabanas" type="button" role="tab">Cabañas</button>
+    </li>
+  </ul>
+  <div class="tab-content mt-3">
+    <div class="tab-pane fade show active" id="deptos" role="tabpanel">
+      <div class="row" id="departamentos"></div>
+    </div>
+    <div class="tab-pane fade" id="cabanas" role="tabpanel">
+      <div class="row" id="cabanas-container"></div>
+    </div>
+  </div>
+</div><!-- Modal Mapa --><div class="modal fade" id="mapModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ubicación de la propiedad</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div id="map" class="map-modal"></div>
       </div>
     </div>
   </div>
+</div><footer class="mt-5">
+  <p>Síguenos en nuestras redes:</p>
+  <p>
+    <a href="#" class="text-white me-3">Facebook</a>
+    <a href="#" class="text-white me-3">Instagram</a>
+    <a href="#" class="text-white">Whatsapp</a>
+  </p>
+  <p>Contacto: +54 9 261 123 4567</p>
+</footer><script>
+const departamentos = [
+  {
+    nombre: "Depto moderno en Palermo",
+    ubicacion: "Buenos Aires",
+    lat: -34.588, lon: -58.430,
+    precio: "$35.000/noche",
+    imagenes: ["img/depto1a.jpg", "img/depto1b.jpg", "img/depto1c.jpg"]
+  },
+  {
+    nombre: "Monoambiente en Bariloche",
+    ubicacion: "Bariloche, Río Negro",
+    lat: -41.133, lon: -71.310,
+    precio: "$28.000/noche",
+    imagenes: ["img/depto2a.jpg", "img/depto2b.jpg", "img/depto2c.jpg"]
+  },
+  {
+    nombre: "Depto vista al lago",
+    ubicacion: "Villa La Angostura",
+    lat: -40.764, lon: -71.643,
+    precio: "$30.000/noche",
+    imagenes: ["img/depto3a.jpg", "img/depto3b.jpg", "img/depto3c.jpg"]
+  },
+  {
+    nombre: "Duplex en Mendoza centro",
+    ubicacion: "Mendoza Capital",
+    lat: -32.890, lon: -68.844,
+    precio: "$26.000/noche",
+    imagenes: ["img/depto4a.jpg", "img/depto4b.jpg", "img/depto4c.jpg"]
+  },
+  {
+    nombre: "Depto frente al mar",
+    ubicacion: "Mar del Plata",
+    lat: -38.000, lon: -57.555,
+    precio: "$32.000/noche",
+    imagenes: ["img/depto5a.jpg", "img/depto5b.jpg", "img/depto5c.jpg"]
+  }
+];
 
-  <div class="tab-pane fade" id="cabanas" role="tabpanel">
-    <!-- Cabañas -->
-    <div class="property">
-      <h4>Cabaña en San Martín de los Andes</h4>
-      <p><strong>Ubicación:</strong> San Martín de los Andes, Neuquén</p>
-      <p>Acogedora cabaña de montaña con vistas al bosque, chimenea, cocina completa y parrilla. Ideal para escapadas románticas o en familia.</p>
-      <div id="carousel-cabana-1" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active"><img src="https://source.unsplash.com/800x600/?cabin,forest" class="d-block w-100" alt=""></div>
-          <div class="carousel-item"><img src="https://source.unsplash.com/800x600/?cabin,interior" class="d-block w-100" alt=""></div>
-          <div class="carousel-item"><img src="https://source.unsplash.com/800x600/?fireplace" class="d-block w-100" alt=""></div>
-          <div class="carousel-item"><img src="https://source.unsplash.com/800x600/?mountain,view" class="d-block w-100" alt=""></div>
-          <div class="carousel-item"><img src="https://source.unsplash.com/800x600/?patagonia,cabin" class="d-block w-100" alt=""></div>
+const cabanas = [
+  {
+    nombre: "Cabaña en el bosque",
+    ubicacion: "San Martín de los Andes",
+    lat: -40.157, lon: -71.352,
+    precio: "$38.000/noche",
+    imagenes: ["img/cab1a.jpg", "img/cab1b.jpg", "img/cab1c.jpg"]
+  },
+  {
+    nombre: "Refugio de montaña",
+    ubicacion: "El Bolsón",
+    lat: -41.960, lon: -71.533,
+    precio: "$34.000/noche",
+    imagenes: ["img/cab2a.jpg", "img/cab2b.jpg", "img/cab2c.jpg"]
+  },
+  {
+    nombre: "Cabaña con vista al lago",
+    ubicacion: "Villa Traful",
+    lat: -40.661, lon: -71.397,
+    precio: "$40.000/noche",
+    imagenes: ["img/cab3a.jpg", "img/cab3b.jpg", "img/cab3c.jpg"]
+  },
+  {
+    nombre: "Cabaña familiar",
+    ubicacion: "Mina Clavero",
+    lat: -31.726, lon: -65.006,
+    precio: "$30.000/noche",
+    imagenes: ["img/cab4a.jpg", "img/cab4b.jpg", "img/cab4c.jpg"]
+  },
+  {
+    nombre: "Cabaña rústica",
+    ubicacion: "La Cumbrecita",
+    lat: -31.904, lon: -64.765,
+    precio: "$29.000/noche",
+    imagenes: ["img/cab5a.jpg", "img/cab5b.jpg", "img/cab5c.jpg"]
+  }
+];
+
+function renderPropiedades(lista, contenedorId) {
+  const contenedor = document.getElementById(contenedorId);
+  lista.forEach((p, i) => {
+    const idCarousel = contenedorId + '-carousel-' + i;
+    const card = document.createElement('div');
+    card.className = 'col-md-6 property-card';
+    card.innerHTML = `
+      <div class="card">
+        <div id="${idCarousel}" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            ${p.imagenes.map((img, idx) => `
+              <div class="carousel-item ${idx === 0 ? 'active' : ''}">
+                <img src="${img}" class="d-block w-100" alt="imagen">
+              </div>`).join('')}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#${idCarousel}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#${idCarousel}" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+          </button>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-cabana-1" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carousel-cabana-1" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-        </button>
+        <div class="card-body">
+          <h5 class="card-title">${p.nombre}</h5>
+          <p class="card-text">${p.ubicacion}<br><strong>${p.precio}</strong></p>
+          <button class="btn btn-primary" onclick="mostrarMapa(${p.lat}, ${p.lon})">Ver mapa</button>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
+    `;
+    contenedor.appendChild(card);
+  });
+}
 
-  </div>  <footer class="text-center">
-    <p>Seguinos en nuestras redes:</p>
-    <p>
-      <a href="#" class="text-white me-2">Facebook</a> |
-      <a href="#" class="text-white mx-2">Instagram</a> |
-      <a href="#" class="text-white ms-2">WhatsApp</a>
-    </p>
-    <p>Tel: +54 9 261 123-4567</p>
-  </footer>  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script></body>
+function mostrarMapa(lat, lon) {
+  const modal = new bootstrap.Modal(document.getElementById('mapModal'));
+  modal.show();
+  setTimeout(() => {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: lat, lng: lon },
+      zoom: 14
+    });
+    new google.maps.Marker({ position: { lat: lat, lng: lon }, map });
+  }, 300);
+}
+
+renderPropiedades(departamentos, 'departamentos');
+renderPropiedades(cabanas, 'cabanas-container');
+</script></body>
 </html>
