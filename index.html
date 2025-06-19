@@ -1,112 +1,132 @@
-<!DOCTYPE html><html lang="es"><head>
+<!DOCTYPE html>
+<html lang="es">
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nehuel Sur - Alquiler Temporario</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .property-card {
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .property-card:hover {
-      transform: scale(1.03);
-    }
-    .nav-tabs .nav-link.active {
-      background-color: #0d6efd;
-      color: white;
-    }
-    .property-img {
-      height: 200px;
-      object-fit: cover;
-      width: 100%;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+    header, footer { background: #333; color: #fff; padding: 1em 0; text-align: center; }
+    header img { height: 80px; }
+    .tabs { display: flex; justify-content: center; margin: 1em 0; }
+    .tabs button { padding: 0.5em 1em; margin: 0 0.5em; cursor: pointer; }
+    .carousel { display: flex; overflow-x: auto; scroll-behavior: smooth; padding: 1em; }
+    .item { flex: 0 0 auto; width: 300px; background: white; margin-right: 1em; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .item img { width: 100%; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+    .item-content { padding: 1em; }
+    .item-content h3 { margin-top: 0; }
+    .item-content button { background: #25D366; color: white; border: none; padding: 0.5em 1em; border-radius: 5px; cursor: pointer; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: white; padding: 1em; max-width: 600px; width: 90%; border-radius: 10px; }
+    .close { float: right; cursor: pointer; font-weight: bold; }
+    iframe { width: 100%; height: 200px; border: 0; margin-top: 1em; border-radius: 10px; }
+    footer p, footer a { margin: 0.5em 0; color: white; }
   </style>
-</head><body>
-  <header class="bg-light text-center py-3">
-    <img src="img/logo.png" alt="Logo Nehuel Sur" height="80">
-    <h1 class="mt-2">Nehuel Sur</h1>
-    <p>Alquiler temporario de departamentos y cabañas en Argentina</p>
-    <img src="img/header.png" alt="Header Nehuel Sur" class="img-fluid">
-  </header>  <main class="container my-4">
-    <ul class="nav nav-tabs" id="propertyTabs">
-      <li class="nav-item">
-        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#departamentos">Departamentos</button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cabanas">Cabañas</button>
-      </li>
-    </ul><div class="tab-content mt-3">
-  <div class="tab-pane fade show active" id="departamentos">
-    <div class="row" id="departamentosContainer"></div>
-  </div>
-  <div class="tab-pane fade" id="cabanas">
-    <div class="row" id="cabanasContainer"></div>
+</head>
+<body>
+
+<header>
+  <img src="img/logo.png" alt="Nehuel Sur Logo" />
+  <h1>Nehuel Sur</h1>
+  <p>Alquiler de departamentos y cabañas en toda Argentina</p>
+  <img src="img/header.png" alt="Header" style="width: 100%; max-height: 200px; object-fit: cover; margin-top: 1em;" />
+</header>
+
+<div class="tabs">
+  <button onclick="filterItems('all')">Todos</button>
+  <button onclick="filterItems('departamento')">Departamentos</button>
+  <button onclick="filterItems('cabaña')">Cabañas</button>
+</div>
+
+<div class="carousel" id="carousel">
+  <!-- Se generan los 15 ítems -->
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle"></h2>
+    <img id="modalImg" src="" alt="" style="width:100%; border-radius: 10px;" />
+    <p id="modalDesc"></p>
+    <a id="whatsappBtn" href="#" target="_blank">
+      <button>Reservar por WhatsApp</button>
+    </a>
+    <iframe id="mapFrame" src="" allowfullscreen="" loading="lazy"></iframe>
   </div>
 </div>
 
-  </main>  <footer class="bg-dark text-white text-center py-4">
-    <p>&copy; 2025 Nehuel Sur. Todos los derechos reservados.</p>
-  </footer>  <div class="modal fade" id="propertyModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="propertyModalLabel"></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <img id="modalImg" src="" alt="Imagen propiedad" class="img-fluid mb-3">
-          <p id="modalDescription"></p>
-          <div id="modalMap" class="mb-3" style="height: 300px;"></div>
-          <a id="whatsappBtn" class="btn btn-success w-100" target="_blank">Reservar por WhatsApp</a>
-        </div>
-      </div>
-    </div>
-  </div>  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>  <script>
-    const propiedades = [
-      { id: 1, tipo: 'departamento', titulo: 'Depto 1', img: 'img/depto1.jpg', desc: 'Amplio y luminoso.', ubicacion: '-32.8908,-68.8448', url: 'https://ejemplo.com/d1' },
-      { id: 2, tipo: 'departamento', titulo: 'Depto 2', img: 'img/depto2.jpg', desc: 'Cerca del parque.', ubicacion: '-32.8923,-68.8501', url: 'https://ejemplo.com/d2' },
-      { id: 3, tipo: 'departamento', titulo: 'Depto 3', img: 'img/depto3.jpg', desc: 'Ideal parejas.', ubicacion: '-32.8897,-68.8429', url: 'https://ejemplo.com/d3' },
-      { id: 4, tipo: 'departamento', titulo: 'Depto 4', img: 'img/depto4.jpg', desc: 'Moderno y cómodo.', ubicacion: '-32.8889,-68.8415', url: 'https://ejemplo.com/d4' },
-      { id: 5, tipo: 'departamento', titulo: 'Depto 5', img: 'img/depto5.jpg', desc: 'En pleno centro.', ubicacion: '-32.8878,-68.8432', url: 'https://ejemplo.com/d5' },
-      { id: 6, tipo: 'departamento', titulo: 'Depto 6', img: 'img/depto6.jpg', desc: 'Vista a la montaña.', ubicacion: '-32.8891,-68.8456', url: 'https://ejemplo.com/d6' },
-      { id: 7, tipo: 'departamento', titulo: 'Depto 7', img: 'img/depto7.jpg', desc: 'Pet friendly.', ubicacion: '-32.8900,-68.8462', url: 'https://ejemplo.com/d7' },
-      { id: 8, tipo: 'departamento', titulo: 'Depto 8', img: 'img/depto8.jpg', desc: 'Para 4 personas.', ubicacion: '-32.8911,-68.8475', url: 'https://ejemplo.com/d8' },
-      { id: 9, tipo: 'cabaña', titulo: 'Cabaña 1', img: 'img/cabana1.jpg', desc: 'Rústica y acogedora.', ubicacion: '-33.1234,-68.9001', url: 'https://ejemplo.com/c1' },
-      { id: 10, tipo: 'cabaña', titulo: 'Cabaña 2', img: 'img/cabana2.jpg', desc: 'Entre viñedos.', ubicacion: '-33.1244,-68.9021', url: 'https://ejemplo.com/c2' },
-      { id: 11, tipo: 'cabaña', titulo: 'Cabaña 3', img: 'img/cabana3.jpg', desc: 'Vista panorámica.', ubicacion: '-33.1250,-68.9041', url: 'https://ejemplo.com/c3' },
-      { id: 12, tipo: 'cabaña', titulo: 'Cabaña 4', img: 'img/cabana4.jpg', desc: 'Con pileta.', ubicacion: '-33.1261,-68.9061', url: 'https://ejemplo.com/c4' },
-      { id: 13, tipo: 'cabaña', titulo: 'Cabaña 5', img: 'img/cabana5.jpg', desc: 'Ideal para grupos.', ubicacion: '-33.1271,-68.9081', url: 'https://ejemplo.com/c5' },
-      { id: 14, tipo: 'cabaña', titulo: 'Cabaña 6', img: 'img/cabana6.jpg', desc: 'A pasos del río.', ubicacion: '-33.1281,-68.9101', url: 'https://ejemplo.com/c6' },
-      { id: 15, tipo: 'cabaña', titulo: 'Cabaña 7', img: 'img/cabana7.jpg', desc: 'Para desconectar.', ubicacion: '-33.1291,-68.9121', url: 'https://ejemplo.com/c7' },
-    ];
+<footer>
+  <p>Contacto por WhatsApp: <a href="https://wa.me/5492613458125" target="_blank">+54 9 261 345-8125</a></p>
+  <p><a href="https://www.facebook.com/NehuelSur" target="_blank">Seguinos en Facebook</a></p>
+  <p>&copy; 2025 Nehuel Sur. Todos los derechos reservados.</p>
+</footer>
 
-    const dContainer = document.getElementById('departamentosContainer');
-    const cContainer = document.getElementById('cabanasContainer');
+<script>
+  const items = [
+    { id: 1, title: 'Depto Centro Mendoza', type: 'departamento', image: 'img/prop1.jpg', description: 'Departamento cómodo en el centro.', map: 'https://maps.google.com/?q=-32.8908,-68.8272' },
+    { id: 2, title: 'Cabaña Potrerillos', type: 'cabaña', image: 'img/prop2.jpg', description: 'Cabaña en la montaña con vista al lago.', map: 'https://maps.google.com/?q=-32.9569,-69.2154' },
+    { id: 3, title: 'Depto Godoy Cruz', type: 'departamento', image: 'img/prop3.jpg', description: 'Ideal para parejas o ejecutivos.', map: 'https://maps.google.com/?q=-32.9162,-68.8442' },
+    { id: 4, title: 'Cabaña San Rafael', type: 'cabaña', image: 'img/prop4.jpg', description: 'Cabaña rústica con pileta.', map: 'https://maps.google.com/?q=-34.6175,-68.3301' },
+    { id: 5, title: 'Depto cerca del parque', type: 'departamento', image: 'img/prop5.jpg', description: 'Zona tranquila y segura.', map: 'https://maps.google.com/?q=-32.8901,-68.8571' },
+    { id: 6, title: 'Cabaña El Challao', type: 'cabaña', image: 'img/prop6.jpg', description: 'Naturaleza y aire puro.', map: 'https://maps.google.com/?q=-32.8512,-68.8812' },
+    { id: 7, title: 'Depto Las Heras', type: 'departamento', image: 'img/prop7.jpg', description: 'Acceso rápido al centro.', map: 'https://maps.google.com/?q=-32.8456,-68.8165' },
+    { id: 8, title: 'Cabaña Cacheuta', type: 'cabaña', image: 'img/prop8.jpg', description: 'Termas y relax asegurado.', map: 'https://maps.google.com/?q=-33.0162,-69.1012' },
+    { id: 9, title: 'Depto San Martín', type: 'departamento', image: 'img/prop9.jpg', description: 'Cómodo y funcional.', map: 'https://maps.google.com/?q=-33.0815,-68.4708' },
+    { id: 10, title: 'Cabaña Uspallata', type: 'cabaña', image: 'img/prop10.jpg', description: 'Vistas a la Cordillera.', map: 'https://maps.google.com/?q=-32.5915,-69.3442' },
+    { id: 11, title: 'Depto Maipú', type: 'departamento', image: 'img/prop11.jpg', description: 'Ideal para familias.', map: 'https://maps.google.com/?q=-32.9902,-68.8509' },
+    { id: 12, title: 'Cabaña Tunuyán', type: 'cabaña', image: 'img/prop12.jpg', description: 'Perfecta para el descanso.', map: 'https://maps.google.com/?q=-33.5657,-69.0169' },
+    { id: 13, title: 'Depto Luján', type: 'departamento', image: 'img/prop13.jpg', description: 'Cerca de bodegas.', map: 'https://maps.google.com/?q=-33.0517,-68.8828' },
+    { id: 14, title: 'Cabaña Valle de Uco', type: 'cabaña', image: 'img/prop14.jpg', description: 'Rodeada de viñedos.', map: 'https://maps.google.com/?q=-33.6078,-69.1003' },
+    { id: 15, title: 'Depto en Chacras', type: 'departamento', image: 'img/prop15.jpg', description: 'Zona residencial exclusiva.', map: 'https://maps.google.com/?q=-33.0165,-68.8832' }
+  ];
 
-    propiedades.forEach(p => {
-      const col = document.createElement('div');
-      col.className = 'col-md-4 mb-4';
-      col.innerHTML = `
-        <div class="card property-card" data-id="${p.id}">
-          <img src="${p.img}" class="card-img-top property-img" alt="${p.titulo}">
-          <div class="card-body">
-            <h5 class="card-title">${p.titulo}</h5>
-            <p class="card-text">${p.desc}</p>
+  const carousel = document.getElementById('carousel');
+  const modal = document.getElementById('modal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalImg = document.getElementById('modalImg');
+  const modalDesc = document.getElementById('modalDesc');
+  const whatsappBtn = document.getElementById('whatsappBtn');
+  const mapFrame = document.getElementById('mapFrame');
+
+  function loadItems(filter = 'all') {
+    carousel.innerHTML = '';
+    items.filter(item => filter === 'all' || item.type === filter)
+      .forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.title}" />
+          <div class="item-content">
+            <h3>${item.title}</h3>
+            <p>${item.description}</p>
+            <button onclick='openModal(${JSON.stringify(item)})'>Ver más</button>
           </div>
-        </div>`;
-      (p.tipo === 'departamento' ? dContainer : cContainer).appendChild(col);
-    });
-
-    document.querySelectorAll('.property-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const id = card.getAttribute('data-id');
-        const p = propiedades.find(x => x.id == id);
-        document.getElementById('propertyModalLabel').textContent = p.titulo;
-        document.getElementById('modalImg').src = p.img;
-        document.getElementById('modalDescription').textContent = p.desc;
-        document.getElementById('whatsappBtn').href = `https://wa.me/5492612345678?text=Me%20interesa%20reservar%20esta%20propiedad:%20${encodeURIComponent(p.url)}`;
-        document.getElementById('modalMap').innerHTML = `<iframe width="100%" height="300" style="border:0" loading="lazy" allowfullscreen src="https://www.google.com/maps?q=${p.ubicacion}&output=embed"></iframe>`;
-        new bootstrap.Modal(document.getElementById('propertyModal')).show();
+        `;
+        carousel.appendChild(div);
       });
-    });
-  </script></body></html>
+  }
+
+  function openModal(item) {
+    modalTitle.textContent = item.title;
+    modalImg.src = item.image;
+    modalDesc.textContent = item.description;
+    whatsappBtn.href = `https://wa.me/5492613458125?text=Me%20interesa%20reservar%20esta%20propiedad:%20${encodeURIComponent(item.title)}`;
+    mapFrame.src = item.map.replace('maps.google.com', 'www.google.com/maps/embed/v1/place?key=AIzaSyA_example&q=' + item.map.split('q=')[1]);
+    modal.style.display = 'flex';
+  }
+
+  function closeModal() {
+    modal.style.display = 'none';
+  }
+
+  function filterItems(type) {
+    loadItems(type);
+  }
+
+  window.onclick = e => { if (e.target === modal) closeModal(); };
+  loadItems();
+</script>
+
+</body>
+</html>
