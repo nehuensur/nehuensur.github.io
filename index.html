@@ -1,152 +1,109 @@
-<!DOCTYPE html><html lang="es"><head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alojamientos Mendoza</title>
-  <script src="https://maps.googleapis.com/maps/api/js?key=&callback=Function.prototype" defer></script>
-  <script>
-    const properties = [...]; // JSON data placeholder
-  </script>
+<!DOCTYPE html><html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propiedades Vacacionales en Argentina</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY"></script>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      padding-bottom: 80px;
-    }
-    header {
-      background-image: url('https://picsum.photos/1200/400');
-      background-size: cover;
-      color: white;
-      padding: 2rem;
-      text-align: center;
-      position: relative;
-    }
-    header img {
-      width: 80px;
-      height: 80px;
-      border-radius: 1rem;
-      background: white;
-      padding: 0.25rem;
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .tab {
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-      border: none;
-      background-color: #ddd;
-      border-radius: 0.5rem;
-    }
-    .tab.active {
-      background-color: #bbb;
-    }
-    .property-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin: 1rem;
-    }
-    .property {
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      width: 300px;
-      background: white;
-    }
-    .property img {
-      max-width: 100%;
-      border-radius: 0.5rem;
-    }
-    footer {
-      background-color: #222;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-    #map-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-    #map-container {
-      width: 90vw;
-      height: 80vh;
-      background: white;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    header { background: url('./img/header.jpg') no-repeat center center; background-size: cover; color: white; padding: 60px 20px; text-align: center; }
+    header img { max-width: 100px; background: white; border-radius: 10px; margin-bottom: 10px; }
+    .descripcion-empresa { padding: 20px; text-align: center; background-color: #f5f5f5; }
+    .descripcion-empresa p { max-width: 800px; margin: 0 auto; }
+    .tabs { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+    .tabs button { padding: 10px 20px; cursor: pointer; border: none; background: #ddd; border-radius: 5px; }
+    .tabs button.active { background: #444; color: white; }
+    .filters { margin: 20px auto; text-align: center; }
+    .property-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
+    .property-card { border: 1px solid #ccc; border-radius: 8px; width: 300px; overflow: hidden; background: white; }
+    .property-card img { width: 100%; height: 200px; object-fit: cover; }
+    .property-card .info { padding: 10px; }
+    footer { background: #222; color: white; text-align: center; padding: 20px; position: fixed; width: 100%; bottom: 0; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 600px; height: 400px; position: relative; }
+    .modal-close { position: absolute; top: 10px; right: 10px; cursor: pointer; font-weight: bold; }
   </style>
-</head><body>
-  <header>
-    <img src="https://picsum.photos/100" alt="Logo" />
-    <h1>Alojamientos en Mendoza</h1>
-    <p>Encuentra tu próxima estadía en departamentos o cabañas</p>
-  </header>  <nav>
-    <button class="tab" onclick="showType('departamento')">Departamentos</button>
-    <button class="tab" onclick="showType('cabaña')">Cabañas</button>
-  </nav>  <div id="properties" class="property-list"></div>  <div id="map-modal">
-    <div id="map-container"></div>
-  </div>  <footer>
-    <p>Contacto por <a href="https://wa.me/5492612640766" style="color: #25D366;">WhatsApp</a> | 
-    <a href="https://www.facebook.com/profile.php?id=61577311958402" style="color: #3b5998;">Facebook</a></p>
-  </footer>  <script>
-    const data = JSON.parse(`REPLACE_ME_WITH_JSON`);
-    const container = document.getElementById("properties");
-    const mapModal = document.getElementById("map-modal");
-    const mapContainer = document.getElementById("map-container");
-    let currentType = 'departamento';
-    let map;
+</head>
+<body><header>
+  <img src="./img/logo.png" alt="Logo">
+  <h1>Vacaciones en Argentina</h1>
+</header><section class="descripcion-empresa">
+  <h2>Tu Aventura Comienza Aquí</h2>
+  <p>Ofrecemos alojamientos temporales de calidad en los rincones más hermosos de Argentina. Desde modernos departamentos urbanos hasta cabañas acogedoras en la montaña, tenemos el lugar ideal para tu descanso o aventura.</p>
+</section><div class="tabs">
+  <button onclick="filtrar('departamento')" class="active">Departamentos</button>
+  <button onclick="filtrar('cabaña')">Cabañas</button>
+</div><div class="filters">
+  <label><input type="checkbox" id="filtro-wifi"> WiFi</label>
+  <label><input type="checkbox" id="filtro-parrilla"> Parrilla</label>
+  <label><input type="checkbox" id="filtro-cochera"> Cochera</label>
+</div><section class="property-list" id="lista-propiedades"></section><div class="modal" id="modal-mapa">
+  <div class="modal-content">
+    <span class="modal-close" onclick="cerrarMapa()">&times;</span>
+    <div id="map" style="width:100%; height:100%;"></div>
+  </div>
+</div><footer>
+  <p>&copy; 2025 Vacaciones en Argentina</p>
+  <p><a href="https://wa.me/5492612640766" style="color: white;">WhatsApp</a> | <a href="https://www.facebook.com/profile.php?id=61577311958402" style="color: white;">Facebook</a></p>
+</footer><script>
+const propiedades = [/* Pega aquí el JSON de propiedades completo */];
+let tipoActual = 'departamento';
 
-    function showType(type) {
-      currentType = type;
-      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
-      event.target.classList.add("active");
-      renderList();
-    }
+function filtrar(tipo) {
+  tipoActual = tipo;
+  document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  renderizar();
+}
 
-    function renderList() {
-      container.innerHTML = "";
-      const filtered = data.properties.filter(p => p.type === currentType);
-      filtered.forEach(p => {
-        const div = document.createElement("div");
-        div.className = "property";
-        div.innerHTML = `
-          <img src="${p.images[0]}" alt="${p.title}" />
-          <h3>${p.title}</h3>
-          <p><strong>Ubicación:</strong> ${p.location}</p>
-          <p><strong>Precio:</strong> ${p.currency} ${p.price_per_night}/noche</p>
-          <p>${p.description}</p>
-          <button onclick="showMap(${p.latitude}, ${p.longitude})">Ver ubicación</button>
-        `;
-        container.appendChild(div);
-      });
-    }
+function renderizar() {
+  const lista = document.getElementById('lista-propiedades');
+  lista.innerHTML = '';
+  const conWifi = document.getElementById('filtro-wifi').checked;
+  const conParrilla = document.getElementById('filtro-parrilla').checked;
+  const conCochera = document.getElementById('filtro-cochera').checked;
 
-    function showMap(lat, lng) {
-      mapModal.style.display = "flex";
-      mapContainer.innerHTML = "";
-      map = new google.maps.Map(mapContainer, {
-        center: { lat, lng },
-        zoom: 14,
-      });
-      new google.maps.Marker({ position: { lat, lng }, map });
-    }
+  propiedades.filter(p => {
+    if (p.type !== tipoActual) return false;
+    if (conWifi && !p.amenities.includes('wifi')) return false;
+    if (conParrilla && !p.amenities.includes('parrilla')) return false;
+    if (conCochera && !p.amenities.includes('cochera')) return false;
+    return true;
+  }).forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'property-card';
+    card.innerHTML = `
+      <img src="${p.images[0]}" alt="${p.title}">
+      <div class="info">
+        <h3>${p.title}</h3>
+        <p>${p.location}</p>
+        <p>${p.description}</p>
+        <p><strong>USD ${p.price_per_night} / noche</strong></p>
+        <button onclick="mostrarMapa(${p.latitude}, ${p.longitude})">Ver mapa</button>
+      </div>
+    `;
+    lista.appendChild(card);
+  });
+}
 
-    mapModal.addEventListener("click", () => mapModal.style.display = "none");
+function mostrarMapa(lat, lng) {
+  document.getElementById('modal-mapa').style.display = 'flex';
+  setTimeout(() => {
+    new google.maps.Map(document.getElementById('map'), {
+      center: { lat, lng },
+      zoom: 14,
+    });
+  }, 100);
+}
 
-    renderList();
-  </script></body></html>
+function cerrarMapa() {
+  document.getElementById('modal-mapa').style.display = 'none';
+}
+
+renderizar();
+document.getElementById('filtro-wifi').addEventListener('change', renderizar);
+document.getElementById('filtro-parrilla').addEventListener('change', renderizar);
+document.getElementById('filtro-cochera').addEventListener('change', renderizar);
+</script></body>
+</html>
