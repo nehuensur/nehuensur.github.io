@@ -3,262 +3,276 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Alquileres Temporarios en Argentina</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet"/>
+  <title>Propiedades - Nehuel Sur</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: #f9f9f9;
-    }
-
-    header {
-      background-image: url('img/header.png');
-      background-size: cover;
-      background-position: center;
-      height: 220px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .carousel-container {
       position: relative;
-    }
-
-    .logo {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-    }
-
-    .logo img {
-      height: 60px;
-    }
-
-    main {
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      color: #333;
-      margin-bottom: 5px;
-    }
-
-    .descripcion {
-      text-align: center;
-      color: #666;
-      font-size: 16px;
-      margin-bottom: 30px;
-    }
-
-    .filtros {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 30px;
-    }
-
-    .filtros select, .filtros input {
-      padding: 8px;
-      font-size: 14px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+      height: 200px;
     }
-
-    .card:hover {
-      transform: translateY(-3px);
+    .carousel-images {
+      display: flex;
+      transition: transform 0.3s ease-in-out;
     }
-
-    .card img {
-      width: 100%;
-      height: 180px;
+    .carousel-images img {
+      min-width: 100%;
       object-fit: cover;
     }
-
-    .card-content {
-      padding: 15px;
+    .carousel-buttons {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0,0,0,0.5);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      z-index: 10;
     }
-
-    .card-content h3 {
-      font-size: 18px;
-      margin: 0 0 5px;
-    }
-
-    .card-content p {
-      margin: 0;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
-      font-size: 14px;
-      color: #666;
-      background: #fff;
-      border-top: 1px solid #ddd;
-    }
-
-    .footer a {
-      color: #0066cc;
-      text-decoration: none;
-      margin: 0 5px;
-    }
-
-    iframe {
-      width: 100%;
-      height: 300px;
-      border: none;
-      margin-top: 40px;
-      border-radius: 8px;
-    }
+    .carousel-buttons.left { left: 0.5rem; }
+    .carousel-buttons.right { right: 0.5rem; }
   </style>
 </head>
-<body>
-  <header>
-    <div class="logo">
-      <img src="img/logo.png" alt="Logo de la empresa" />
-    </div>
+<body class="bg-gray-100 text-gray-800">
+  <header class="bg-white shadow p-4 mb-6">
+    <h1 class="text-2xl font-bold text-center">Propiedades Nehuel Sur</h1>
   </header>
 
-  <main>
-    <h1>Propiedades para Alquiler Temporario en Argentina</h1>
-    <p class="descripcion">Explorá una cuidada selección de propiedades vacacionales y temporarias en destinos increíbles de Argentina. Desde estudios urbanos hasta cabañas en la montaña, encontrá el alojamiento perfecto para tu estadía.</p>
-
-    <div class="filtros">
-      <input type="text" id="search" placeholder="Buscar ubicación o título..." />
-      <select id="tipo">
-        <option value="">Tipo</option>
-        <option value="departamento">Departamento</option>
-        <option value="cabaña">Cabaña</option>
-      </select>
-      <select id="huespedes">
-        <option value="">Huéspedes</option>
-        <option value="2">2+</option>
-        <option value="4">4+</option>
-        <option value="6">6+</option>
-      </select>
-    </div>
-
-    <div id="propiedades" class="grid"></div>
-
-    <iframe
-      src="https://www.google.com/maps/d/u/0/embed?mid=1H4aBQ5oHJcdDPKkTKh-qHa4N9NTSrq8&ehbc=2E312F"
-      allowfullscreen
-    ></iframe>
+  <main class="p-6 max-w-7xl mx-auto">
+    <div id="propiedades-container" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
   </main>
-
-  <footer class="footer">
-    <p>© 2025 Alquileres Temporarios Argentina | <a href="https://wa.me/5492612640766" target="_blank">WhatsApp</a> | <a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank">Facebook</a></p>
-  </footer>
 
   <script>
     const propiedades = [
       {
-        id: 1,
-        title: "Departamento moderno en Palermo",
-        location: "Buenos Aires",
-        price_per_night: 50,
-        max_guests: 2,
-        type: "departamento",
-        images: ["img/departamento1.jpg"]
+        "id": "1",
+        "nombre": "Departamento Moderno en Palermo Soho",
+        "ubicacion": "Buenos Aires, Capital Federal",
+        "capacidad": 4,
+        "precio_por_noche": 8500,
+        "descripcion": "Hermoso departamento moderno de 2 ambientes en excelente estado. Cocina integrada, baño completo y balcón privado.",
+        "amenities": ["aire acondicionado", "wifi", "tv smart", "parrilla", "lavadora"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_996231-MLA49875152599_042025-O.jpg",
+          "https://http2.mlstatic.com/D_888205-MLA49875152588_042025-O.jpg"
+        ]
       },
       {
-        id: 2,
-        title: "Cabaña con vista al lago",
-        location: "Bariloche",
-        price_per_night: 75,
-        max_guests: 4,
-        type: "cabaña",
-        images: ["img/cabana1.jpg"]
+        "id": "2",
+        "nombre": "Cabaña de Montaña en San Martín de los Andes",
+        "ubicacion": "Neuquén, Patagonia",
+        "capacidad": 6,
+        "precio_por_noche": 12000,
+        "descripcion": "Cabaña de madera con vista al lago Lácar. Totalmente equipada, ideal para familias o grupos de amigos.",
+        "amenities": ["estufa a leña", "wifi", "cochera", "jardín", "asador"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_790553-MLA50106924655_052025-O.jpg",
+          "https://http2.mlstatic.com/D_920380-MLA50106924663_052025-O.jpg"
+        ]
       },
       {
-        id: 3,
-        title: "Departamento céntrico con balcón",
-        location: "Mendoza",
-        price_per_night: 40,
-        max_guests: 2,
-        type: "departamento",
-        images: ["img/departamento2.jpg"]
+        "id": "3",
+        "nombre": "Loft Céntrico en Mendoza Capital",
+        "ubicacion": "Mendoza, Cuyo",
+        "capacidad": 2,
+        "precio_por_noche": 7500,
+        "descripcion": "Loft moderno ubicado a metros del Parque Central. Cocina equipada, baño privado, aire acondicionado.",
+        "amenities": ["wifi", "aire acondicionado", "tv cable", "cerca de restaurantes"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_953771-MLA49584805229_042022-O.jpg",
+          "https://http2.mlstatic.com/D_961769-MLA49584805236_042022-O.jpg"
+        ]
       },
       {
-        id: 4,
-        title: "Cabaña rústica en el bosque",
-        location: "Villa La Angostura",
-        price_per_night: 85,
-        max_guests: 6,
-        type: "cabaña",
-        images: ["img/cabana2.jpg"]
+        "id": "4",
+        "nombre": "Casa frente al mar en Mar del Plata",
+        "ubicacion": "Buenos Aires, Costa Atlántica",
+        "capacidad": 8,
+        "precio_por_noche": 15000,
+        "descripcion": "Casa grande frente al mar, 3 habitaciones, parrilla y garage. A pasos de la playa.",
+        "amenities": ["parrilla", "garage", "wifi", "tv", "vista al mar"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_743271-MLA48902039265_012022-O.jpg",
+          "https://http2.mlstatic.com/D_964882-MLA48902039262_012022-O.jpg"
+        ]
+      },
+      {
+        "id": "5",
+        "nombre": "Monoambiente céntrico en Córdoba Capital",
+        "ubicacion": "Córdoba, Capital",
+        "capacidad": 2,
+        "precio_por_noche": 6200,
+        "descripcion": "Práctico monoambiente con cocina integrada, baño privado y excelente ubicación.",
+        "amenities": ["wifi", "aire acondicionado", "ascensor"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_900072-MLA49141636245_022022-O.jpg"
+        ]
+      },
+      {
+        "id": "6",
+        "nombre": "Dúplex familiar en Bariloche",
+        "ubicacion": "Río Negro, Patagonia",
+        "capacidad": 5,
+        "precio_por_noche": 13500,
+        "descripcion": "Cómodo dúplex con cocina, living comedor y vista a las montañas. Ideal para familias.",
+        "amenities": ["wifi", "calefacción", "cochera", "patio"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_859380-MLA50404107256_062022-O.jpg",
+          "https://http2.mlstatic.com/D_775780-MLA50404107248_062022-O.jpg"
+        ]
+      },
+      {
+        "id": "7",
+        "nombre": "Estudio luminoso en Rosario",
+        "ubicacion": "Santa Fe, Rosario",
+        "capacidad": 2,
+        "precio_por_noche": 7000,
+        "descripcion": "Estudio con vista abierta, kitchenette, baño completo y aire acondicionado.",
+        "amenities": ["wifi", "aire acondicionado", "cerca del río"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_973020-MLA49756829296_042025-O.jpg"
+        ]
+      },
+      {
+        "id": "8",
+        "nombre": "Quinta con pileta en Pilar",
+        "ubicacion": "Buenos Aires, GBA Norte",
+        "capacidad": 10,
+        "precio_por_noche": 20000,
+        "descripcion": "Casa quinta con gran parque, pileta, quincho y juegos. Ideal para escapadas de fin de semana.",
+        "amenities": ["pileta", "quincho", "parque", "wifi", "juegos"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_760625-MLA49097837483_022022-O.jpg"
+        ]
+      },
+      {
+        "id": "9",
+        "nombre": "PH en San Telmo con terraza privada",
+        "ubicacion": "Buenos Aires, Capital Federal",
+        "capacidad": 3,
+        "precio_por_noche": 9500,
+        "descripcion": "PH reciclado a nuevo con estilo bohemio. Cocina equipada, dormitorio y terraza con parrilla.",
+        "amenities": ["terraza", "wifi", "parrilla", "tv"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_721933-MLA49444628590_032022-O.jpg"
+        ]
+      },
+      {
+        "id": "10",
+        "nombre": "Habitación privada en casa compartida - Salta",
+        "ubicacion": "Salta, Norte",
+        "capacidad": 1,
+        "precio_por_noche": 4000,
+        "descripcion": "Habitación con cama individual, escritorio y wifi. Baño compartido. Barrio tranquilo.",
+        "amenities": ["wifi", "escritorio", "cerca del centro"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_951470-MLA51841944139_102022-O.jpg"
+        ]
+      },
+      {
+        "id": "11",
+        "nombre": "Departamento 2 ambientes en La Plata",
+        "ubicacion": "Buenos Aires, La Plata",
+        "capacidad": 3,
+        "precio_por_noche": 8000,
+        "descripcion": "Departamento cómodo y luminoso, ideal para parejas o estadías laborales.",
+        "amenities": ["wifi", "aire acondicionado", "ascensor", "balcón"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_781084-MLA49917251816_052025-O.jpg"
+        ]
+      },
+      {
+        "id": "12",
+        "nombre": "Container Home en San Luis",
+        "ubicacion": "San Luis, Cuyo",
+        "capacidad": 4,
+        "precio_por_noche": 7000,
+        "descripcion": "Alojamiento sustentable en casa container. Cómoda, moderna y rodeada de naturaleza.",
+        "amenities": ["wifi", "deck", "espacio verde", "cochera"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_728172-MLA49920571808_052025-O.jpg"
+        ]
+      },
+      {
+        "id": "13",
+        "nombre": "Tiny House en San Rafael",
+        "ubicacion": "Mendoza, San Rafael",
+        "capacidad": 2,
+        "precio_por_noche": 6800,
+        "descripcion": "Pequeña cabaña moderna, ideal para parejas. Totalmente equipada.",
+        "amenities": ["wifi", "aire acondicionado", "jardín"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_756877-MLA49887461893_052025-O.jpg"
+        ]
+      },
+      {
+        "id": "14",
+        "nombre": "Domo Geodésico en el bosque",
+        "ubicacion": "Chubut, Lago Puelo",
+        "capacidad": 2,
+        "precio_por_noche": 10500,
+        "descripcion": "Experiencia glamping en domo de lujo. Baño privado, vista a la montaña.",
+        "amenities": ["glamping", "wifi", "calefacción", "vista"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_827232-MLA49972720256_052025-O.jpg"
+        ]
+      },
+      {
+        "id": "15",
+        "nombre": "Casa con jacuzzi en Cafayate",
+        "ubicacion": "Salta, Valles Calchaquíes",
+        "capacidad": 6,
+        "precio_por_noche": 16000,
+        "descripcion": "Casa completa con jardín, galería, parrilla y jacuzzi. En el corazón de los viñedos.",
+        "amenities": ["jacuzzi", "parrilla", "jardín", "wifi", "cochera"],
+        "imagenes": [
+          "https://http2.mlstatic.com/D_681785-MLA49987002189_052025-O.jpg"
+        ]
       }
     ];
 
-    const contenedor = document.getElementById("propiedades");
-    const search = document.getElementById("search");
-    const tipo = document.getElementById("tipo");
-    const huespedes = document.getElementById("huespedes");
+    const container = document.getElementById('propiedades-container');
 
-    function renderLista(data) {
-      contenedor.innerHTML = "";
-      data.forEach(prop => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <img src="${prop.images[0]}" alt="${prop.title}" />
-          <div class="card-content">
-            <h3>${prop.title}</h3>
-            <p>${prop.location}</p>
-            <p>USD ${prop.price_per_night} por noche · ${prop.max_guests} huéspedes</p>
-          </div>`;
-        contenedor.appendChild(card);
-      });
+    propiedades.forEach((prop, index) => {
+      const carouselId = `carousel-${index}`;
+      const imagesId = `carousel-images-${index}`;
+
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-2xl shadow overflow-hidden flex flex-col';
+
+      card.innerHTML = `
+        <div class="carousel-container" id="${carouselId}">
+          <div class="carousel-buttons left" onclick="moveSlide(${index}, -1)">←</div>
+          <div class="carousel-buttons right" onclick="moveSlide(${index}, 1)">→</div>
+          <div class="carousel-images" id="${imagesId}">
+            ${prop.imagenes.map(img => `<img src="${img}" alt="Imagen de ${prop.nombre}">`).join('')}
+          </div>
+        </div>
+        <div class="p-4 flex flex-col justify-between flex-1">
+          <h2 class="text-xl font-semibold mb-1">${prop.nombre}</h2>
+          <p class="text-sm text-gray-500 mb-1"><strong>ID:</strong> ${prop.id}</p>
+          <p class="text-sm text-gray-500 mb-2">${prop.ubicacion}</p>
+          <p class="text-sm mb-1">Capacidad: ${prop.capacidad} persona${prop.capacidad > 1 ? 's' : ''}</p>
+          <p class="text-lg font-bold text-green-600 mb-2">$${prop.precio_por_noche.toLocaleString()} / noche</p>
+          <p class="text-sm text-gray-700 mb-3">${prop.descripcion}</p>
+          <div class="flex flex-wrap gap-2 text-xs text-white mb-3">
+            ${prop.amenities.map(am => `<span class="bg-blue-500 px-2 py-1 rounded-full">${am}</span>`).join('')}
+          </div>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+
+    const currentIndices = Array.from({ length: propiedades.length }, () => 0);
+
+    function moveSlide(index, direction) {
+      const totalImages = propiedades[index].imagenes.length;
+      currentIndices[index] = (currentIndices[index] + direction + totalImages) % totalImages;
+      const images = document.getElementById(`carousel-images-${index}`);
+      images.style.transform = `translateX(-${currentIndices[index] * 100}%)`;
     }
-
-    function filtrar() {
-      let resultados = propiedades;
-
-      const texto = search.value.toLowerCase();
-      const filtroTipo = tipo.value;
-      const filtroHuespedes = parseInt(huespedes.value);
-
-      if (texto) {
-        resultados = resultados.filter(p =>
-          p.title.toLowerCase().includes(texto) ||
-          p.location.toLowerCase().includes(texto)
-        );
-      }
-
-      if (filtroTipo) {
-        resultados = resultados.filter(p => p.type === filtroTipo);
-      }
-
-      if (filtroHuespedes) {
-        resultados = resultados.filter(p => p.max_guests >= filtroHuespedes);
-      }
-
-      renderLista(resultados);
-    }
-
-    search.addEventListener("input", filtrar);
-    tipo.addEventListener("change", filtrar);
-    huespedes.addEventListener("change", filtrar);
-
-    renderLista(propiedades);
   </script>
 </body>
 </html>
