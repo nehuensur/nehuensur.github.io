@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -23,27 +22,16 @@
     footer p, footer a { margin: 0.5em 0; color: white; }
   </style>
 </head>
-<body>
-
-<header>
+<body><header>
   <img src="img/logo.png" alt="Nehuel Sur Logo" />
   <h1>Nehuel Sur</h1>
   <p>Alquiler de departamentos y cabañas en toda Argentina</p>
   <img src="img/header.png" alt="Header" style="width: 100%; max-height: 200px; object-fit: cover; margin-top: 1em;" />
-</header>
-
-<div class="tabs">
+</header><div class="tabs">
   <button onclick="filterItems('all')">Todos</button>
   <button onclick="filterItems('departamento')">Departamentos</button>
   <button onclick="filterItems('cabaña')">Cabañas</button>
-</div>
-
-<div class="carousel" id="carousel">
-  <!-- Se generan los 15 ítems -->
-</div>
-
-<!-- Modal -->
-<div id="modal" class="modal">
+</div><div class="carousel" id="carousel"></div><!-- Modal --><div id="modal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h2 id="modalTitle"></h2>
@@ -54,31 +42,27 @@
     </a>
     <iframe id="mapFrame" src="" allowfullscreen="" loading="lazy"></iframe>
   </div>
-</div>
-
-<footer>
-  <p>Contacto por WhatsApp: <a href="https://wa.me/5492613458125" target="_blank">+54 9 261 345-8125</a></p>
-  <p><a href="https://www.facebook.com/NehuelSur" target="_blank">Seguinos en Facebook</a></p>
+</div><footer>
+  <p>Contacto por WhatsApp: <a href="https://wa.me/542612640766" target="_blank">+54 9 261 264-0766</a></p>
+  <p><a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank">Seguinos en Facebook</a></p>
   <p>&copy; 2025 Nehuel Sur. Todos los derechos reservados.</p>
-</footer>
-
-<script>
+</footer><script>
   const items = [
-    { id: 1, title: 'Depto Centro Mendoza', type: 'departamento', image: 'img/prop1.jpg', description: 'Departamento cómodo en el centro.', map: 'https://maps.google.com/?q=-32.8908,-68.8272' },
-    { id: 2, title: 'Cabaña Potrerillos', type: 'cabaña', image: 'img/prop2.jpg', description: 'Cabaña en la montaña con vista al lago.', map: 'https://maps.google.com/?q=-32.9569,-69.2154' },
-    { id: 3, title: 'Depto Godoy Cruz', type: 'departamento', image: 'img/prop3.jpg', description: 'Ideal para parejas o ejecutivos.', map: 'https://maps.google.com/?q=-32.9162,-68.8442' },
-    { id: 4, title: 'Cabaña San Rafael', type: 'cabaña', image: 'img/prop4.jpg', description: 'Cabaña rústica con pileta.', map: 'https://maps.google.com/?q=-34.6175,-68.3301' },
-    { id: 5, title: 'Depto cerca del parque', type: 'departamento', image: 'img/prop5.jpg', description: 'Zona tranquila y segura.', map: 'https://maps.google.com/?q=-32.8901,-68.8571' },
-    { id: 6, title: 'Cabaña El Challao', type: 'cabaña', image: 'img/prop6.jpg', description: 'Naturaleza y aire puro.', map: 'https://maps.google.com/?q=-32.8512,-68.8812' },
-    { id: 7, title: 'Depto Las Heras', type: 'departamento', image: 'img/prop7.jpg', description: 'Acceso rápido al centro.', map: 'https://maps.google.com/?q=-32.8456,-68.8165' },
-    { id: 8, title: 'Cabaña Cacheuta', type: 'cabaña', image: 'img/prop8.jpg', description: 'Termas y relax asegurado.', map: 'https://maps.google.com/?q=-33.0162,-69.1012' },
-    { id: 9, title: 'Depto San Martín', type: 'departamento', image: 'img/prop9.jpg', description: 'Cómodo y funcional.', map: 'https://maps.google.com/?q=-33.0815,-68.4708' },
-    { id: 10, title: 'Cabaña Uspallata', type: 'cabaña', image: 'img/prop10.jpg', description: 'Vistas a la Cordillera.', map: 'https://maps.google.com/?q=-32.5915,-69.3442' },
-    { id: 11, title: 'Depto Maipú', type: 'departamento', image: 'img/prop11.jpg', description: 'Ideal para familias.', map: 'https://maps.google.com/?q=-32.9902,-68.8509' },
-    { id: 12, title: 'Cabaña Tunuyán', type: 'cabaña', image: 'img/prop12.jpg', description: 'Perfecta para el descanso.', map: 'https://maps.google.com/?q=-33.5657,-69.0169' },
-    { id: 13, title: 'Depto Luján', type: 'departamento', image: 'img/prop13.jpg', description: 'Cerca de bodegas.', map: 'https://maps.google.com/?q=-33.0517,-68.8828' },
-    { id: 14, title: 'Cabaña Valle de Uco', type: 'cabaña', image: 'img/prop14.jpg', description: 'Rodeada de viñedos.', map: 'https://maps.google.com/?q=-33.6078,-69.1003' },
-    { id: 15, title: 'Depto en Chacras', type: 'departamento', image: 'img/prop15.jpg', description: 'Zona residencial exclusiva.', map: 'https://maps.google.com/?q=-33.0165,-68.8832' }
+    { id: 1, title: 'Depto Centro Mendoza', type: 'departamento', image: 'img/prop1.jpg', description: 'Departamento cómodo en el centro.', lat: -32.8908, lng: -68.8272 },
+    { id: 2, title: 'Cabaña Potrerillos', type: 'cabaña', image: 'img/prop2.jpg', description: 'Cabaña en la montaña con vista al lago.', lat: -32.9569, lng: -69.2154 },
+    { id: 3, title: 'Depto Godoy Cruz', type: 'departamento', image: 'img/prop3.jpg', description: 'Ideal para parejas o ejecutivos.', lat: -32.9162, lng: -68.8442 },
+    { id: 4, title: 'Cabaña San Rafael', type: 'cabaña', image: 'img/prop4.jpg', description: 'Cabaña rústica con pileta.', lat: -34.6175, lng: -68.3301 },
+    { id: 5, title: 'Depto cerca del parque', type: 'departamento', image: 'img/prop5.jpg', description: 'Zona tranquila y segura.', lat: -32.8901, lng: -68.8571 },
+    { id: 6, title: 'Cabaña El Challao', type: 'cabaña', image: 'img/prop6.jpg', description: 'Naturaleza y aire puro.', lat: -32.8512, lng: -68.8812 },
+    { id: 7, title: 'Depto Las Heras', type: 'departamento', image: 'img/prop7.jpg', description: 'Acceso rápido al centro.', lat: -32.8456, lng: -68.8165 },
+    { id: 8, title: 'Cabaña Cacheuta', type: 'cabaña', image: 'img/prop8.jpg', description: 'Termas y relax asegurado.', lat: -33.0162, lng: -69.1012 },
+    { id: 9, title: 'Depto San Martín', type: 'departamento', image: 'img/prop9.jpg', description: 'Cómodo y funcional.', lat: -33.0815, lng: -68.4708 },
+    { id: 10, title: 'Cabaña Uspallata', type: 'cabaña', image: 'img/prop10.jpg', description: 'Vistas a la Cordillera.', lat: -32.5915, lng: -69.3442 },
+    { id: 11, title: 'Depto Maipú', type: 'departamento', image: 'img/prop11.jpg', description: 'Ideal para familias.', lat: -32.9902, lng: -68.8509 },
+    { id: 12, title: 'Cabaña Tunuyán', type: 'cabaña', image: 'img/prop12.jpg', description: 'Perfecta para el descanso.', lat: -33.5657, lng: -69.0169 },
+    { id: 13, title: 'Depto Luján', type: 'departamento', image: 'img/prop13.jpg', description: 'Cerca de bodegas.', lat: -33.0517, lng: -68.8828 },
+    { id: 14, title: 'Cabaña Valle de Uco', type: 'cabaña', image: 'img/prop14.jpg', description: 'Rodeada de viñedos.', lat: -33.6078, lng: -69.1003 },
+    { id: 15, title: 'Depto en Chacras', type: 'departamento', image: 'img/prop15.jpg', description: 'Zona residencial exclusiva.', lat: -33.0165, lng: -68.8832 }
   ];
 
   const carousel = document.getElementById('carousel');
@@ -111,8 +95,8 @@
     modalTitle.textContent = item.title;
     modalImg.src = item.image;
     modalDesc.textContent = item.description;
-    whatsappBtn.href = `https://wa.me/5492613458125?text=Me%20interesa%20reservar%20esta%20propiedad:%20${encodeURIComponent(item.title)}`;
-    mapFrame.src = item.map.replace('maps.google.com', 'www.google.com/maps/embed/v1/place?key=AIzaSyA_example&q=' + item.map.split('q=')[1]);
+    whatsappBtn.href = `https://wa.me/542612640766?text=Me%20interesa%20reservar%20esta%20propiedad:%20${encodeURIComponent(item.title)}`;
+    mapFrame.src = `https://www.openstreetmap.org/export/embed.html?bbox=${item.lng-0.005}%2C${item.lat-0.005}%2C${item.lng+0.005}%2C${item.lat+0.005}&layer=mapnik&marker=${item.lat}%2C${item.lng}`;
     modal.style.display = 'flex';
   }
 
@@ -126,7 +110,5 @@
 
   window.onclick = e => { if (e.target === modal) closeModal(); };
   loadItems();
-</script>
-
-</body>
+</script></body>
 </html>
