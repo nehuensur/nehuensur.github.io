@@ -1,133 +1,264 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Alquileres Temporarios en Argentina</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: #f9f9f9;
+    }
+
+    header {
+      background-image: url('img/header.png');
+      background-size: cover;
+      background-position: center;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .descripcion {
+      text-align: center;
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .filtros select, .filtros input {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 15px;
+    }
+
+    .card-content h3 {
+      font-size: 18px;
+      margin: 0 0 5px;
+    }
+
+    .card-content p {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #666;
+      background: #fff;
+      border-top: 1px solid #ddd;
+    }
+
+    .footer a {
+      color: #0066cc;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+      margin-top: 40px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800">  <!-- Header -->  <header class="relative">
-    <img src="img/header.png" alt="Encabezado" class="w-full h-64 object-cover">
-    <div class="absolute top-0 w-full h-64 bg-black bg-opacity-50 flex items-center justify-center">
-      <h1 class="text-white text-4xl font-bold">Alquileres Temporarios en Argentina</h1>
+<body>
+  <header>
+    <div class="logo">
+      <img src="img/logo.png" alt="Logo de la empresa" />
     </div>
-  </header>  <!-- Descripción -->  <section class="p-6 text-center">
-    <h2 class="text-2xl font-bold mb-2">Descubrí tu próxima estadía</h2>
-    <p>Ofrecemos alojamientos únicos en todo el país: departamentos modernos, cabañas acogedoras y espacios confortables para tus vacaciones o viajes temporarios.</p>
-  </section>  <!-- Filtros -->  <section class="px-6 mb-4 flex flex-wrap gap-4 justify-center">
-    <label><input type="checkbox" id="filtro-wifi" class="mr-1"> WiFi</label>
-    <label><input type="checkbox" id="filtro-parrilla" class="mr-1"> Parrilla</label>
-    <label><input type="checkbox" id="filtro-cochera" class="mr-1"> Cochera</label>
-    <button onclick="aplicarFiltros()" class="ml-4 bg-blue-500 text-white px-4 py-2 rounded">Aplicar</button>
-  </section>  <!-- Tabs -->  <div class="flex justify-center gap-4 mb-6">
-    <button onclick="cambiarTipo('departamento')" class="tab text-lg px-4 py-2 border rounded">Departamentos</button>
-    <button onclick="cambiarTipo('cabaña')" class="tab text-lg px-4 py-2 border rounded">Cabañas</button>
-  </div>  <!-- Lista de Propiedades -->  <div id="lista-propiedades" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 mb-16"></div>  <!-- Modal del Mapa -->  <div id="mapa-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white p-4 rounded w-full max-w-xl">
-      <iframe id="mapa-frame" src="" width="100%" height="300" style="border:0;" allowfullscreen loading="lazy"></iframe>
-      <button onclick="cerrarMapa()" class="mt-2 bg-red-500 text-white px-4 py-2 rounded">Cerrar</button>
+  </header>
+
+  <main>
+    <h1>Propiedades para Alquiler Temporario en Argentina</h1>
+    <p class="descripcion">Explorá una cuidada selección de propiedades vacacionales y temporarias en destinos increíbles de Argentina. Desde estudios urbanos hasta cabañas en la montaña, encontrá el alojamiento perfecto para tu estadía.</p>
+
+    <div class="filtros">
+      <input type="text" id="search" placeholder="Buscar ubicación o título..." />
+      <select id="tipo">
+        <option value="">Tipo</option>
+        <option value="departamento">Departamento</option>
+        <option value="cabaña">Cabaña</option>
+      </select>
+      <select id="huespedes">
+        <option value="">Huéspedes</option>
+        <option value="2">2+</option>
+        <option value="4">4+</option>
+        <option value="6">6+</option>
+      </select>
     </div>
-  </div>  <!-- Footer -->  <footer class="bg-gray-900 text-white py-6 mt-16 text-center">
-    <p>Contacto: <a href="https://wa.me/5492612640766" target="_blank" class="text-green-400">WhatsApp</a> | 
-       <a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank" class="text-blue-400">Facebook</a></p>
-    <p class="mt-2">&copy; 2025 Alquileres Temporarios en Argentina</p>
-  </footer>  <!-- Script -->  <script>
+
+    <div id="propiedades" class="grid"></div>
+
+    <iframe
+      src="https://www.google.com/maps/d/u/0/embed?mid=1H4aBQ5oHJcdDPKkTKh-qHa4N9NTSrq8&ehbc=2E312F"
+      allowfullscreen
+    ></iframe>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 Alquileres Temporarios Argentina | <a href="https://wa.me/5492612640766" target="_blank">WhatsApp</a> | <a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank">Facebook</a></p>
+  </footer>
+
+  <script>
     const propiedades = [
       {
-        "id": 1,
-        "title": "Departamento moderno en Mendoza",
-        "description": "Hermoso departamento céntrico con WiFi y cochera.",
-        "location": "Mendoza Capital",
-        "latitude": -32.889458,
-        "longitude": -68.845839,
-        "price_per_night": 40,
-        "currency": "USD",
-        "max_guests": 4,
-        "type": "departamento",
-        "images": ["img/depto1.jpg"],
-        "amenities": ["wifi", "cochera"]
+        id: 1,
+        title: "Departamento moderno en Palermo",
+        location: "Buenos Aires",
+        price_per_night: 50,
+        max_guests: 2,
+        type: "departamento",
+        images: ["img/departamento1.jpg"]
       },
       {
-        "id": 2,
-        "title": "Cabaña con vista en Bariloche",
-        "description": "Ideal para escapadas en pareja. Parrilla y chimenea.",
-        "location": "Bariloche, Río Negro",
-        "latitude": -41.133472,
-        "longitude": -71.310278,
-        "price_per_night": 65,
-        "currency": "USD",
-        "max_guests": 2,
-        "type": "cabaña",
-        "images": ["img/cabana1.jpg"],
-        "amenities": ["wifi", "parrilla"]
+        id: 2,
+        title: "Cabaña con vista al lago",
+        location: "Bariloche",
+        price_per_night: 75,
+        max_guests: 4,
+        type: "cabaña",
+        images: ["img/cabana1.jpg"]
       },
       {
-        "id": 3,
-        "title": "Departamento luminoso en Córdoba",
-        "description": "Cómodo y funcional, cerca de todo.",
-        "location": "Córdoba Capital",
-        "latitude": -31.416668,
-        "longitude": -64.183334,
-        "price_per_night": 35,
-        "currency": "USD",
-        "max_guests": 3,
-        "type": "departamento",
-        "images": ["img/depto2.jpg"],
-        "amenities": ["wifi"]
+        id: 3,
+        title: "Departamento céntrico con balcón",
+        location: "Mendoza",
+        price_per_night: 40,
+        max_guests: 2,
+        type: "departamento",
+        images: ["img/departamento2.jpg"]
+      },
+      {
+        id: 4,
+        title: "Cabaña rústica en el bosque",
+        location: "Villa La Angostura",
+        price_per_night: 85,
+        max_guests: 6,
+        type: "cabaña",
+        images: ["img/cabana2.jpg"]
       }
     ];
 
-    let tipoActual = "departamento";
+    const contenedor = document.getElementById("propiedades");
+    const search = document.getElementById("search");
+    const tipo = document.getElementById("tipo");
+    const huespedes = document.getElementById("huespedes");
 
-    function renderProperties() {
-      const lista = document.getElementById("lista-propiedades");
-      lista.innerHTML = "";
-      const filtroWifi = document.getElementById("filtro-wifi").checked;
-      const filtroParrilla = document.getElementById("filtro-parrilla").checked;
-      const filtroCochera = document.getElementById("filtro-cochera").checked;
-
-      const filtradas = propiedades.filter(p => {
-        return p.type === tipoActual &&
-          (!filtroWifi || p.amenities.includes("wifi")) &&
-          (!filtroParrilla || p.amenities.includes("parrilla")) &&
-          (!filtroCochera || p.amenities.includes("cochera"));
-      });
-
-      filtradas.forEach(p => {
+    function renderLista(data) {
+      contenedor.innerHTML = "";
+      data.forEach(prop => {
         const card = document.createElement("div");
-        card.className = "bg-white rounded shadow p-4";
+        card.className = "card";
         card.innerHTML = `
-          <img src="${p.images[0]}" class="w-full h-48 object-cover rounded mb-2">
-          <h3 class="text-xl font-semibold">${p.title}</h3>
-          <p class="text-gray-600">${p.location}</p>
-          <p class="text-blue-600 font-bold mt-2">$${p.price_per_night} ${p.currency}/noche</p>
-          <p class="text-sm mt-1">${p.description}</p>
-          <div class="text-sm text-gray-500 mt-1">Capacidad: ${p.max_guests} huéspedes</div>
-          <button onclick="mostrarMapa(${p.latitude}, ${p.longitude})" class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">Ver mapa</button>
-        `;
-        lista.appendChild(card);
+          <img src="${prop.images[0]}" alt="${prop.title}" />
+          <div class="card-content">
+            <h3>${prop.title}</h3>
+            <p>${prop.location}</p>
+            <p>USD ${prop.price_per_night} por noche · ${prop.max_guests} huéspedes</p>
+          </div>`;
+        contenedor.appendChild(card);
       });
     }
 
-    function cambiarTipo(tipo) {
-      tipoActual = tipo;
-      renderProperties();
+    function filtrar() {
+      let resultados = propiedades;
+
+      const texto = search.value.toLowerCase();
+      const filtroTipo = tipo.value;
+      const filtroHuespedes = parseInt(huespedes.value);
+
+      if (texto) {
+        resultados = resultados.filter(p =>
+          p.title.toLowerCase().includes(texto) ||
+          p.location.toLowerCase().includes(texto)
+        );
+      }
+
+      if (filtroTipo) {
+        resultados = resultados.filter(p => p.type === filtroTipo);
+      }
+
+      if (filtroHuespedes) {
+        resultados = resultados.filter(p => p.max_guests >= filtroHuespedes);
+      }
+
+      renderLista(resultados);
     }
 
-    function aplicarFiltros() {
-      renderProperties();
-    }
+    search.addEventListener("input", filtrar);
+    tipo.addEventListener("change", filtrar);
+    huespedes.addEventListener("change", filtrar);
 
-    function mostrarMapa(lat, lng) {
-      const url = `https://www.google.com/maps?q=${lat},${lng}&output=embed`;
-      document.getElementById("mapa-frame").src = url;
-      document.getElementById("mapa-modal").classList.remove("hidden");
-    }
-
-    function cerrarMapa() {
-      document.getElementById("mapa-modal").classList.add("hidden");
-      document.getElementById("mapa-frame").src = "";
-    }
-
-    document.addEventListener("DOMContentLoaded", renderProperties);
-  </script></body>
+    renderLista(propiedades);
+  </script>
+</body>
 </html>
