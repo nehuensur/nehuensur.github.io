@@ -1,0 +1,214 @@
+{
+  "contacto": {
+    "whatsapp": "+542612640766",
+    "facebook": "https://www.facebook.com/profile.php?id=61577311958402"
+  },
+  "propiedades": [
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento Moderno en el Centro de Mendoza",
+      "descripcion": "Hermoso departamento totalmente equipado con dos dormitorios, cocina americana, baño completo y balcón privado. Ideal para parejas o familias pequeñas.",
+      "ubicacion": {
+        "latitud": -32.8895,
+        "longitud": -68.8456
+      },
+      "direccion": "Av. Independencia 123, Mendoza, Argentina",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/depto1.jpg",
+        "https://ejemplo.com/imagenes/depto2.jpg",
+        "https://ejemplo.com/imagenes/depto3.jpg"
+      ],
+      "link_booking": "https://booking.com/departamento-mendoza-123",
+      "amenities": [
+        "Wi-Fi Gratis",
+        "Aire Acondicionado",
+        "Cocina Equipada",
+        "Ascensor",
+        "Estacionamiento Seguro"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento Familiar con Vista al Parque",
+      "descripcion": "Espacioso departamento para hasta 5 personas, con tres dormitorios, amplia sala de estar y terraza privada con vistas al parque principal.",
+      "ubicacion": {
+        "latitud": -32.8901,
+        "longitud": -68.8350
+      },
+      "direccion": "San Martín 456, Mendoza, Argentina",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/depto4.jpg",
+        "https://ejemplo.com/imagenes/depto5.jpg",
+        "https://ejemplo.com/imagenes/depto6.jpg"
+      ],
+      "link_booking": "https://booking.com/departamento-mendoza-456",
+      "amenities": [
+        "Terraza Privada",
+        "Wi-Fi",
+        "Lavadora",
+        "Televisión por Cable",
+        "Cuna para bebé"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Loft Estilo Loft en Barrio Arizu",
+      "descripcion": "Diseño moderno y minimalista en pleno corazón del Barrio Arizu. Ideal para viajeros solos o parejas. Cuenta con una cama matrimonial y sofá cama.",
+      "ubicacion": {
+        "latitud": -32.8930,
+        "longitud": -68.8400
+      },
+      "direccion": "Arizu 789, Mendoza, Argentina",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/depto7.jpg",
+        "https://ejemplo.com/imagenes/depto8.jpg",
+        "https://ejemplo.com/imagenes/depto9.jpg"
+      ],
+      "link_booking": "https://booking.com/departamento-arizu-789",
+      "amenities": [
+        "Desayuno Incluido",
+        "Aire Acondicionado",
+        "Bañera de Hidromasaje",
+        "Mascotas Permitidas",
+        "Piscina Compartida"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento Ejecutivo con Gimnasio",
+      "descripcion": "Perfecto para viajes de negocios. Cuenta con escritorio, conexión rápida a internet, gimnasio privado y acceso directo a transporte público.",
+      "ubicacion": {
+        "latitud": -32.8860,
+        "longitud": -68.8410
+      },
+      "direccion": "Las Heras 101, Mendoza, Argentina",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/depto10.jpg",
+        "https://ejemplo.com/imagenes/depto11.jpg",
+        "https://ejemplo.com/imagenes/depto12.jpg"
+      ],
+      "link_booking": "https://booking.com/departamento-lasher-101",
+      "amenities": [
+        "Gimnasio",
+        "Sala de Reuniones",
+        "Wi-Fi Rápido",
+        "Servicio de Limpieza Diario",
+        "Zona Tranquila"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento frente al Cerro de la Gloria",
+      "descripcion": "Vistas espectaculares al cerro desde el balcón. Dos habitaciones, cocina completa, baño privado y espacio ideal para descansar después de excursiones.",
+      "ubicacion": {
+        "latitud": -32.8910,
+        "longitud": -68.8200
+      },
+      "direccion": "Chacabuco 202, Mendoza, Argentina",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/depto13.jpg",
+        "https://ejemplo.com/imagenes/depto14.jpg",
+        "https://ejemplo.com/imagenes/depto15.jpg"
+      ],
+      "link_booking": "https://booking.com/departamento-chacabuco-202",
+      "amenities": [
+        "Vistas Panorámicas",
+        "Balcón Privado",
+        "Cocina Completa",
+        "Ventiladores de Techo",
+        "Planta Baja"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento Premium en Zona Comercial",
+      "descripcion": "Ubicado en zona comercial, cerca de centros comerciales y restaurantes. Dos dormitorios, baños completos, aire acondicionado y estacionamiento propio.",
+      "ubicacion": {
+        "latitud": -32.8880,
+        "longitud": -68.8500
+      },
+      "direccion": "Belgrano 303, Mendoza, Argentina",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/depto16.jpg",
+        "https://ejemplo.com/imagenes/depto17.jpg",
+        "https://ejemplo.com/imagenes/depto18.jpg"
+      ],
+      "link_booking": "https://booking.com/departamento-belgrano-303",
+      "amenities": [
+        "Cerca de Centros Comerciales",
+        "Estacionamiento Propio",
+        "TV Smart",
+        "Lavadora",
+        "Cafetera"
+      ]
+    },
+    {
+      "tipo": "cabaña",
+      "titulo": "Cabaña Rustica en el Valle de Uco",
+      "descripcion": "Cabaña acogedora rodeada de naturaleza, perfecta para desconectar. Cuenta con dos habitaciones, living comedor, chimenea, baño privado y parrilla exterior.",
+      "ubicacion": {
+        "latitud": -33.1330,
+        "longitud": -68.4430
+      },
+      "direccion": "Ruta Provincial 92 km 15, Tupungato, Mendoza",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/cabania1.jpg",
+        "https://ejemplo.com/imagenes/cabania2.jpg",
+        "https://ejemplo.com/imagenes/cabania3.jpg"
+      ],
+      "link_booking": "https://booking.com/cabania-valle-ucu-456",
+      "amenities": [
+        "Chimenea",
+        "Parrilla",
+        "Wi-Fi",
+        "Vista a la Montaña",
+        "Área de Fogón"
+      ]
+    },
+    {
+      "tipo": "cabaña",
+      "titulo": "Cabaña de Lujo con Jacuzzi Exterior",
+      "descripcion": "Exclusiva cabaña con jacuzzi al aire libre, sauna privado, dos dormitorios y cocina completa. Ideal para escapadas románticas o vacaciones familiares.",
+      "ubicacion": {
+        "latitud": -33.1500,
+        "longitud": -68.4500
+      },
+      "direccion": "Camino a Uspallata s/n, Tunuyán, Mendoza",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/cabania4.jpg",
+        "https://ejemplo.com/imagenes/cabania5.jpg",
+        "https://ejemplo.com/imagenes/cabania6.jpg"
+      ],
+      "link_booking": "https://booking.com/cabania-jacuzzi-tunuyan",
+      "amenities": [
+        "Jacuzzi Exterior",
+        "Sauna Privado",
+        "Cocina Completa",
+        "Barbacoa",
+        "Jardín Privado"
+      ]
+    },
+    {
+      "tipo": "cabaña",
+      "titulo": "Cabaña Campestre con Huerta Orgánica",
+      "descripcion": "Ideal para amantes de la vida rural. Tiene huerta orgánica propia, fogón exterior, dos habitaciones y entorno natural ideal para niños.",
+      "ubicacion": {
+        "latitud": -33.1000,
+        "longitud": -68.4000
+      },
+      "direccion": "Ruta 94 S, San Carlos, Mendoza",
+      "imagenes": [
+        "https://ejemplo.com/imagenes/cabania7.jpg",
+        "https://ejemplo.com/imagenes/cabania8.jpg",
+        "https://ejemplo.com/imagenes/cabania9.jpg"
+      ],
+      "link_booking": "https://booking.com/cabania-san-carlos-huerta",
+      "amenities": [
+        "Huerta Orgánica",
+        "Fogón Exterior",
+        "Parque Infantil",
+        "Mascotas Bienvenidas",
+        "Aire Acondicionado"
+      ]
+    }
+  ]
