@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="es"><head>
+<!DOCTYPE html>
+<html lang="es">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nehuel Sur</title>
@@ -9,214 +11,226 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-    }header {
-  background-color: #f8f8f8;
-  padding: 20px;
-  text-align: center;
-}
+    }
 
-header img {
-  max-height: 100px;
-}
+    header {
+      background-color: #f8f8f8;
+      padding: 20px;
+      text-align: center;
+    }
 
-.header-image {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-}
+    header img {
+      max-height: 100px;
+    }
 
-.tabs {
-  display: flex;
-  justify-content: center;
-  background-color: #ddd;
-}
+    .header-image {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+    }
 
-.tabs button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #ddd;
-  cursor: pointer;
-}
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background-color: #ddd;
+    }
 
-.tabs button.active {
-  background-color: #bbb;
-}
+    .tabs button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #ddd;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-.property-list {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
+    .tabs button.active {
+      background-color: #bbb;
+    }
 
-.property-item {
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  padding: 10px;
-}
+    .property-list {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
 
-.property-item img {
-  width: 100%;
-  max-height: 200px;
-  object-fit: cover;
-}
+    .property-item {
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      padding: 10px;
+      cursor: pointer;
+    }
 
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-}
+    .property-item img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+    }
 
-.modal-content {
-  background-color: #fff;
-  margin: 5% auto;
-  padding: 20px;
-  width: 90%;
-  max-width: 600px;
-}
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
 
-#map {
-  height: 200px;
-  margin-top: 10px;
-}
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+    }
 
-footer {
-  background-color: #222;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-}
+    .modal-content button {
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+    }
 
-a {
-  color: #00f;
-}
+    .modal-content button:hover {
+      background-color: #0056b3;
+    }
 
+    #map {
+      height: 200px;
+      margin-top: 10px;
+    }
+
+    footer {
+      background-color: #222;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    footer a {
+      color: #0cf;
+      text-decoration: none;
+    }
   </style>
-</head><body>
+</head>
+<body>
   <header>
     <img src="img/logo.png" alt="Nehuel Sur logo" />
     <h1>Nehuel Sur</h1>
     <p>Alquiler temporario de departamentos y cabañas en toda Argentina</p>
-  </header>  <img src="img/header.png" alt="Header" class="header-image" />  <div class="tabs">
+  </header>
+
+  <img src="img/header.png" alt="Header" class="header-image" />
+
+  <div class="tabs">
     <button class="tab-btn active" onclick="filterProperties('departamento')">Departamentos</button>
     <button class="tab-btn" onclick="filterProperties('cabaña')">Cabañas</button>
-  </div>  <div class="property-list" id="property-list"></div>  <div id="propertyModal" class="modal">
+  </div>
+
+  <div class="property-list" id="property-list"></div>
+
+  <div id="propertyModal" class="modal">
     <div class="modal-content">
-      <span id="closeModal" style="float:right; cursor:pointer;">&times;</span>
+      <span id="closeModal" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
       <h2 id="modal-title"></h2>
       <img id="modal-img" src="" alt="Imagen propiedad" style="width:100%; max-height:300px; object-fit:cover;" />
       <p id="modal-description"></p>
+      <ul id="modal-amenities"></ul>
+      <p id="modal-address"></p>
+      <a id="modal-booking-link" href="#" target="_blank">
+        <button>Reservar en Booking</button>
+      </a>
       <div id="map"></div>
-      <a id="whatsapp-link" target="_blank" style="display:inline-block; margin-top:10px; background:#25d366; color:white; padding:10px 15px; text-decoration:none; border-radius:5px;">Reservar por WhatsApp</a>
     </div>
-  </div>  <footer>
-    <p>Contacto: <a href="https://wa.me/542612640766" target="_blank">+54 9 261 264 0766</a></p>
-    <p><a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank">Facebook</a></p>
-  </footer>  <script>
-    const properties = [
-      {
-        "id": 1,
-        "tipo": "departamento",
-        "titulo": "Depto en Mar del Plata",
-        "descripcion": "A pasos de la playa, con vista al mar.",
-        "imagen": "img/depto1.jpg",
-        "lat": -38.005,
-        "lng": -57.542,
-        "link": "https://publicacion1.com"
-      },
-      {
-        "id": 2,
-        "tipo": "departamento",
-        "titulo": "Depto en Mendoza Centro",
-        "descripcion": "Cerca de la Peatonal Sarmiento, moderno y cómodo.",
-        "imagen": "img/depto2.jpg",
-        "lat": -32.8908,
-        "lng": -68.8272,
-        "link": "https://publicacion2.com"
-      },
-      {
-        "id": 3,
-        "tipo": "departamento",
-        "titulo": "Depto en Bariloche",
-        "descripcion": "Vista al lago Nahuel Huapi.",
-        "imagen": "img/depto3.jpg",
-        "lat": -41.1335,
-        "lng": -71.3103,
-        "link": "https://publicacion3.com"
-      },
-      {
-        "id": 4,
-        "tipo": "cabaña",
-        "titulo": "Cabaña en Villa La Angostura",
-        "descripcion": "Rodeada de naturaleza, ideal para descansar.",
-        "imagen": "img/cabana1.jpg",
-        "lat": -40.7614,
-        "lng": -71.6434,
-        "link": "https://publicacion4.com"
-      },
-      {
-        "id": 5,
-        "tipo": "cabaña",
-        "titulo": "Cabaña en El Bolsón",
-        "descripcion": "A orillas del río Azul.",
-        "imagen": "img/cabana2.jpg",
-        "lat": -41.9644,
-        "lng": -71.5333,
-        "link": "https://publicacion5.com"
-      }
-      // Agregar los 10 ítems restantes siguiendo el mismo formato
-    ];
+  </div>
+
+  <footer>
+    <p>WhatsApp: <a id="whatsapp-link" href="#" target="_blank"></a> | 
+    <a id="facebook-link" href="#" target="_blank">Facebook</a></p>
+  </footer>
+
+  <script>
+    let propiedades = [];
+    let contacto = {};
+
+    async function cargarDatos() {
+      const res = await fetch('datos.json');
+      const datos = await res.json();
+      propiedades = datos.propiedades;
+      contacto = datos.contacto;
+
+      document.getElementById('whatsapp-link').href = `https://wa.me/${contacto.whatsapp.replace(/\D/g, '')}`;
+      document.getElementById('whatsapp-link').textContent = contacto.whatsapp;
+      document.getElementById('facebook-link').href = contacto.facebook;
+
+      filterProperties('departamento');
+    }
 
     function filterProperties(tipo) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      const list = document.getElementById('property-list');
-      list.innerHTML = '';
-      properties.filter(p => p.tipo === tipo).forEach(p => {
+      document.querySelector(`.tab-btn[onclick="filterProperties('${tipo}')"]`).classList.add('active');
+
+      const contenedor = document.getElementById('property-list');
+      contenedor.innerHTML = '';
+      propiedades.filter(p => p.tipo === tipo).forEach((propiedad, index) => {
         const div = document.createElement('div');
         div.className = 'property-item';
         div.innerHTML = `
-          <img src="${p.imagen}" alt="${p.titulo}" />
-          <h3>${p.titulo}</h3>
-          <p>${p.descripcion}</p>
-          <button onclick="showModal(${p.id})">Ver más</button>
+          <img src="${propiedad.imagenes[0]}" alt="${propiedad.titulo}" />
+          <h3>${propiedad.titulo}</h3>
+          <p>${propiedad.descripcion}</p>
         `;
-        list.appendChild(div);
+        div.onclick = () => mostrarModal(propiedad);
+        contenedor.appendChild(div);
       });
     }
 
-    function showModal(id) {
-      const p = properties.find(x => x.id === id);
-      document.getElementById('modal-title').innerText = p.titulo;
-      document.getElementById('modal-img').src = p.imagen;
-      document.getElementById('modal-description').innerText = p.descripcion;
-      document.getElementById('whatsapp-link').href = `https://wa.me/542612640766?text=Me%20interesa%20reservar%20esta%20propiedad:%20${encodeURIComponent(p.link)}`;
-      document.getElementById('propertyModal').style.display = 'block';
+    function mostrarModal(propiedad) {
+      document.getElementById('modal-title').textContent = propiedad.titulo;
+      document.getElementById('modal-img').src = propiedad.imagenes[0];
+      document.getElementById('modal-description').textContent = propiedad.descripcion;
+      document.getElementById('modal-address').textContent = "Dirección: " + propiedad.direccion;
+      document.getElementById('modal-booking-link').href = propiedad.link_booking;
 
-      setTimeout(() => {
-        const map = L.map('map').setView([p.lat, p.lng], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-        L.marker([p.lat, p.lng]).addTo(map);
-      }, 300);
+      const amenitiesList = document.getElementById('modal-amenities');
+      amenitiesList.innerHTML = '';
+      propiedad.amenities.forEach(am => {
+        const li = document.createElement('li');
+        li.textContent = am;
+        amenitiesList.appendChild(li);
+      });
+
+      const modal = document.getElementById('propertyModal');
+      modal.style.display = 'block';
+
+      const mapDiv = document.getElementById('map');
+      mapDiv.innerHTML = '';
+      const map = L.map('map').setView([propiedad.ubicacion.latitud, propiedad.ubicacion.longitud], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors'
+      }).addTo(map);
+      L.marker([propiedad.ubicacion.latitud, propiedad.ubicacion.longitud]).addTo(map);
     }
 
     document.getElementById('closeModal').onclick = () => {
       document.getElementById('propertyModal').style.display = 'none';
-    };
+    }
 
-    window.onclick = event => {
-      if (event.target == document.getElementById('propertyModal')) {
+    window.onclick = (e) => {
+      if (e.target === document.getElementById('propertyModal')) {
         document.getElementById('propertyModal').style.display = 'none';
       }
-    };
+    }
 
-    // Cargar inicialmente departamentos
-    filterProperties('departamento');
-  </script></body></html
+    cargarDatos();
+  </script>
+</body>
+</html>
