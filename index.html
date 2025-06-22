@@ -3,113 +3,215 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nehuel Sur</title>
+  <title>Nehuel Sur - Alquiler Temporario</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    header, footer { background: #333; color: #fff; text-align: center; padding: 1rem; }
-    #tabs { display: flex; justify-content: center; margin: 1rem 0; }
-    #tabs button { margin: 0 1rem; padding: 0.5rem 1rem; cursor: pointer; }
-    #carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1rem; padding: 1rem; }
-    .card { flex: 0 0 300px; border: 1px solid #ccc; border-radius: 10px; padding: 1rem; background: #f9f9f9; scroll-snap-align: start; }
-    .card img { width: 100%; border-radius: 8px; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
-    .modal-content { background: white; padding: 2rem; max-width: 500px; width: 90%; border-radius: 10px; position: relative; }
-    .modal-content h2 { margin-top: 0; }
-    .close { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 1.5rem; }
-    .mapa { width: 100%; height: 300px; margin-top: 1rem; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: url('img/header.png') no-repeat center center;
+      background-size: cover;
+      height: 200px;
+    }
+    #logo {
+      height: 80px;
+      margin: 10px;
+    }
+    nav {
+      text-align: center;
+      margin: 10px 0;
+    }
+    button.tab {
+      padding: 10px 20px;
+      margin: 0 5px;
+      cursor: pointer;
+      background: #ccc;
+      border: none;
+      border-radius: 5px;
+    }
+    button.tab.active {
+      background: #666;
+      color: white;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+      padding: 20px;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 2px 2px 5px #aaa;
+      background: white;
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 10px;
+    }
+    #map {
+      height: 400px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      border-radius: 10px;
+      position: relative;
+    }
+    .close {
+      position: absolute;
+      top: 10px; right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <img src="img/logo.png" alt="Logo" height="60" />
-  <h1>Nehuel Sur</h1>
-  <img src="img/header.png" alt="Header" width="100%" />
+  <img id="logo" src="img/logo.png" alt="Logo Nehuel Sur" />
 </header>
 
-<div id="tabs">
-  <button onclick="filtrar('todos')">Todos</button>
-  <button onclick="filtrar('departamento')">Departamentos</button>
-  <button onclick="filtrar('cabaña')">Cabañas</button>
-</div>
+<nav>
+  <button class="tab active" onclick="filterCards('todos')">Todos</button>
+  <button class="tab" onclick="filterCards('departamento')">Departamentos</button>
+  <button class="tab" onclick="filterCards('cabaña')">Cabañas</button>
+</nav>
 
-<div id="carousel"></div>
+<div class="grid" id="cards-container"></div>
 
-<div id="modal" class="modal">
-  <div class="modal-content" id="modal-content"></div>
-</div>
+<h2 style="text-align:center">Ubicación de las propiedades</h2>
+<div id="map"></div>
 
 <footer>
-  <p><a id="link-wsp" href="" target="_blank">Reservar por WhatsApp</a></p>
-  <p><a id="link-fb" href="" target="_blank">Facebook</a></p>
+  <p>
+    <a id="whatsapp-link" href="" target="_blank">Reservar por WhatsApp</a> |
+    <a id="facebook-link" href="" target="_blank">Facebook</a>
+  </p>
 </footer>
 
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content" id="modal-content">
+    <span class="close" onclick="closeModal()">×</span>
+    <!-- Contenido dinámico -->
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
   let propiedades = [];
   let contacto = {};
-  let filtroActual = 'todos';
+  let map;
+  let markers = [];
 
   fetch('datos.json')
     .then(res => res.json())
     .then(data => {
-      propiedades = data.propiedades;
       contacto = data.contacto;
-      document.getElementById('link-wsp').href = `https://wa.me/${contacto.whatsapp.replace(/\D/g, '')}?text=Hola%2C%20quiero%20reservar%20una%20propiedad.`;
-      document.getElementById('link-fb').href = contacto.facebook;
-      renderizar();
+      propiedades = data.propiedades;
+      document.getElementById("whatsapp-link").href = `https://wa.me/${contacto.whatsapp.replace(/\D/g, '')}`;
+      document.getElementById("facebook-link").href = contacto.facebook;
+      initMap();
+      renderCards('todos');
     });
 
-  function filtrar(tipo) {
-    filtroActual = tipo;
-    renderizar();
+  function initMap() {
+    map = L.map('map').setView([-32.89, -68.85], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
   }
 
-  function renderizar() {
-    const contenedor = document.getElementById('carousel');
-    contenedor.innerHTML = '';
-    const filtrados = propiedades.filter(p => filtroActual === 'todos' || p.tipo === filtroActual);
-    filtrados.forEach((prop, i) => {
-      const card = document.createElement('div');
-      card.className = 'card';
+  function renderCards(tipo) {
+    const container = document.getElementById("cards-container");
+    container.innerHTML = "";
+    clearMarkers();
+
+    propiedades.filter(p => tipo === 'todos' || p.tipo === tipo).forEach((prop, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
       card.innerHTML = `
-        <img src="${prop.imagenes[0]}" alt="${prop.titulo}" />
-        <h3>${prop.titulo}</h3>
-        <p>${prop.descripcion.slice(0, 80)}...</p>
-        <button onclick="verDetalle(${i})">Ver más</button>
-      `;
-      contenedor.appendChild(card);
+        <img src="${prop.imagenes[0]}" alt="Imagen propiedad">
+        <div class="card-content">
+          <h3>${prop.titulo}</h3>
+          <p>${prop.descripcion}</p>
+          <button onclick="openModal(${i})">Ver más</button>
+        </div>`;
+      container.appendChild(card);
+
+      const marker = L.marker([prop.ubicacion.latitud, prop.ubicacion.longitud])
+        .addTo(map)
+        .bindPopup(`<strong>${prop.titulo}</strong><br>${prop.direccion}`);
+      markers.push(marker);
     });
   }
 
-  function verDetalle(i) {
-    const prop = propiedades[i];
-    const modal = document.getElementById('modal');
-    const content = document.getElementById('modal-content');
+  function filterCards(tipo) {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+    document.querySelector(`.tab[onclick="filterCards('${tipo}')"]`).classList.add("active");
+    renderCards(tipo);
+  }
+
+  function openModal(index) {
+    const prop = propiedades[index];
+    const modal = document.getElementById("modal");
+    const content = document.getElementById("modal-content");
+
+    const carousel = prop.imagenes.map(img => `<img src="${img}" style="width:100%;margin-bottom:10px"/>`).join("");
+    const amenities = `<ul>${prop.amenities.map(a => `<li>${a}</li>`).join("")}</ul>`;
+    const whatsappMsg = encodeURIComponent(`Hola, estoy interesado/a en la propiedad: ${prop.titulo}`);
+    const linkWA = `https://wa.me/${contacto.whatsapp.replace(/\D/g, '')}?text=${whatsappMsg}`;
+
     content.innerHTML = `
-      <span class="close" onclick="cerrarModal()">&times;</span>
+      <span class="close" onclick="closeModal()">×</span>
       <h2>${prop.titulo}</h2>
       <p><strong>Dirección:</strong> ${prop.direccion}</p>
-      <div>
-        ${prop.imagenes.map(img => `<img src="${img}" alt="" style="width:100%; margin-top:1rem;" />`).join('')}
-      </div>
-      <p><strong>Amenities:</strong> ${prop.amenities.join(', ')}</p>
-      <a href="${prop.link_booking}" target="_blank">Ver en Booking</a>
-      <div class="mapa">
-        <iframe width="100%" height="300" style="border:0" loading="lazy"
-          src="https://www.google.com/maps?q=${prop.ubicacion.latitud},${prop.ubicacion.longitud}&output=embed">
-        </iframe>
-      </div>
-    `;
-    modal.style.display = 'flex';
+      ${carousel}
+      <p>${prop.descripcion}</p>
+      <h4>Amenities</h4>
+      ${amenities}
+      <p>
+        <a href="${linkWA}" target="_blank">Reservar por WhatsApp</a> |
+        <a href="${prop.link_booking}" target="_blank">Ver en Booking</a>
+      </p>`;
+    modal.style.display = "flex";
   }
 
-  function cerrarModal() {
-    document.getElementById('modal').style.display = 'none';
+  function closeModal() {
+    document.getElementById("modal").style.display = "none";
   }
 
-  window.onclick = function(e) {
-    const modal = document.getElementById('modal');
-    if (e.target === modal) cerrarModal();
+  function clearMarkers() {
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
   }
 </script>
 
