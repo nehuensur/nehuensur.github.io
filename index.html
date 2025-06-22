@@ -1,578 +1,822 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nehuel Sur - Alquiler Temporario</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      background: #f0f2f5; /* Un gris más claro para el fondo */
-      color: #333;
-    }
-    header {
-      background: #004d40;
-      color: white;
-      padding: 1.5rem;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    header img {
-      height: 60px; /* Logo un poco más grande */
-      margin-bottom: 10px;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.2rem;
-    }
-    header p {
-      margin: 5px 0 0;
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-    nav {
-      text-align: center;
-      margin: 1.5rem 0;
-    }
-    nav button {
-      margin: 0 0.7rem;
-      padding: 0.8rem 1.8rem; /* Botones más grandes */
-      cursor: pointer;
-      background-color: #00796b;
-      color: white;
-      border: none;
-      border-radius: 25px; /* Bordes más redondeados (pill shape) */
-      font-size: 1rem;
-      font-weight: bold;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    nav button:hover {
-      background-color: #004d40;
-      transform: translateY(-2px); /* Pequeño efecto al pasar el ratón */
-    }
-    nav button.active { /* Estilo para el botón activo */
-      background-color: #004d40;
-      box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nehuel Sur - Alquiler Temporario</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        :root {
+            --primary-color: #004d40;
+            --secondary-color: #00796b;
+            --accent-color: #80cbc4;
+            --background-light: #f0f2f5;
+            --text-dark: #333;
+            --text-light: #555;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --modal-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            --border-radius-soft: 10px;
+            --border-radius-pill: 25px;
+        }
 
-    .galeria {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.5rem; /* Espacio más generoso entre cards */
-      padding: 1.5rem;
-    }
-    .card {
-      background: white;
-      border-radius: 10px; /* Bordes más redondeados */
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Sombra más pronunciada */
-      overflow: hidden;
-      width: 320px; /* Ancho ligeramente mayor para las cards */
-      transition: transform 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-5px); /* Efecto elevación al pasar el ratón */
-    }
-    .card img {
-      width: 100%;
-      height: 220px; /* Altura ligeramente mayor para las imágenes */
-      object-fit: cover;
-      border-bottom: 1px solid #eee;
-    }
-    .card-body {
-      padding: 1.2rem;
-    }
-    .card-body h3 {
-      margin-top: 0;
-      color: #004d40;
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
-    }
-    .card-body p {
-      font-size: 0.95rem;
-      color: #555;
-      line-height: 1.5;
-      margin-bottom: 1rem;
-    }
-    .card-body button {
-      background-color: #00796b;
-      color: white;
-      border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      transition: background-color 0.3s ease;
-      width: 100%; /* Botón "Ver más" de ancho completo */
-    }
-    .card-body button:hover {
-      background-color: #004d40;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
 
-    .amenities {
-      font-size: 0.9rem;
-      color: #555;
-      margin: 0.5rem 0;
-      list-style: none;
-      padding-left: 0;
-      display: grid; /* Para organizar amenities en columnas */
-      grid-template-columns: 1fr 1fr; /* Dos columnas */
-      gap: 5px;
-    }
-    .amenities li::before {
-      content: "✔ "; /* Tick de verificación */
-      color: #00796b;
-      font-weight: bold;
-      margin-right: 5px;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.6); /* Fondo más oscuro para el modal */
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 2rem;
-      width: 90%;
-      max-width: 700px; /* Modal un poco más ancho */
-      border-radius: 10px;
-      overflow-y: auto;
-      max-height: 90vh;
-      position: relative;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    }
-    .modal-content h2 {
-      color: #004d40;
-      margin-top: 0;
-      font-size: 1.8rem;
-    }
-    .close {
-      position: absolute;
-      top: 15px;
-      right: 25px;
-      cursor: pointer;
-      font-size: 2rem; /* Más grande para mejor usabilidad */
-      color: #555;
-      transition: color 0.2s ease;
-    }
-    .close:hover {
-      color: #000;
-    }
-    .modal-body img {
-      width: 100%;
-      max-height: 300px; /* Altura máxima para las imágenes del modal */
-      object-fit: cover;
-      margin: 10px 0;
-      border-radius: 5px;
-    }
-    #mapaModal { /* ID para el contenedor del mapa Leaflet */
-      width: 100%;
-      height: 350px; /* Mapa un poco más alto */
-      border-radius: 5px;
-      margin-top: 1.5rem;
-    }
-    footer {
-      background: #004d40;
-      color: white;
-      text-align: center;
-      padding: 1.5rem;
-      margin-top: 3rem;
-      font-size: 1rem;
-    }
-    footer a {
-      color: #80cbc4;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
-    a {
-      color: #00796b;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        header img {
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
 
-    /* Media Queries para responsividad */
-    @media (max-width: 768px) {
-      nav button {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-        margin: 0 0.4rem;
-      }
-      .card {
-        width: 90%; /* Las cards ocupan más ancho en móviles */
-      }
-      .modal-content {
-        padding: 1rem;
-      }
-      .close {
-        font-size: 1.8rem;
-        top: 10px;
-        right: 15px;
-      }
-      .amenities {
-        grid-template-columns: 1fr; /* Una columna en móviles */
-      }
-    }
-  </style>
+        nav {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 0 1rem;
+        }
+        nav button {
+            margin: 0 0.8rem;
+            padding: 0.8rem 2rem;
+            cursor: pointer;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-pill);
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-width: 160px; /* Ancho mínimo para consistencia */
+        }
+        nav button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        nav button.active {
+            background-color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.3), 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .galeria {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius-soft);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            width: 350px; /* Ancho ajustado para mejor visualización */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .card img {
+            width: 100%;
+            height: 240px; /* Altura mejorada para imágenes */
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+        .card-body {
+            padding: 1.5rem;
+            flex-grow: 1; /* Permite que el cuerpo ocupe el espacio restante */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Espacia el contenido */
+        }
+        .card-body h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            margin-bottom: 0.75rem;
+        }
+        .card-body p {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        .price-info {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 1rem;
+        }
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.1rem;
+            margin-right: 10px;
+        }
+        .current-price {
+            color: #d32f2f; /* Un color rojo para el descuento */
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .card-body button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: var(--border-radius-pill);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            margin-top: 1rem; /* Espacio superior para el botón */
+        }
+        .card-body button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .amenities {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin: 0.75rem 0 1.5rem;
+            list-style: none;
+            padding-left: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Más flexible */
+            gap: 8px;
+        }
+        .amenities li::before {
+            content: "✅ "; /* Emoji de tick, más visual */
+            color: var(--secondary-color);
+            margin-right: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7); /* Fondo más oscuro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto; /* Permite scroll si el contenido es largo */
+        }
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 800px; /* Modal más ancho para el detalle */
+            border-radius: var(--border-radius-soft);
+            position: relative;
+            box-shadow: var(--modal-shadow);
+            max-height: 95vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        .modal.is-open .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: #aaa;
+            font-size: 3rem; /* Más grande y visible */
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .modal-body h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .modal-body p strong {
+            color: var(--text-dark);
+        }
+        .modal-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .modal-images img {
+            width: 100%;
+            height: 180px; /* Altura uniforme para las imágenes del modal */
+            object-fit: cover;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        #mapaModal {
+            width: 100%;
+            height: 400px; /* Mapa más grande en el modal */
+            border-radius: 5px;
+            margin-top: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .modal-links {
+            margin-top: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .modal-links a {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius-pill);
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-links a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        /* Iconos de redes sociales para los links */
+        .modal-links a[href*="booking"]::before { content: "🏨 "; }
+        .modal-links a[href*="whatsapp"]::before { content: "📱 "; }
+        .modal-links a[href*="facebook"]::before { content: "📘 "; }
+
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            font-size: 1rem;
+        }
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Enlaces generales */
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Media Queries para responsividad */
+        @media (max-width: 992px) {
+            .galeria {
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+            .card {
+                width: 320px;
+            }
+            .modal-content {
+                max-width: 95%;
+                padding: 2rem;
+            }
+            .modal-images {
+                grid-template-columns: 1fr; /* Una columna en pantallas medianas */
+            }
+            #mapaModal {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            header p {
+                font-size: 1rem;
+            }
+            nav button {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.95rem;
+                margin: 0 0.5rem;
+                min-width: unset; /* Remover ancho mínimo para que se ajusten */
+            }
+            .galeria {
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .card {
+                width: 95%; /* Las cards ocupan más ancho en móviles */
+                margin-bottom: 1rem; /* Espacio entre cards en vista móvil */
+            }
+            .card-body h3 {
+                font-size: 1.4rem;
+            }
+            .card-body p, .amenities li {
+                font-size: 0.9rem;
+            }
+            .old-price {
+                font-size: 1rem;
+            }
+            .current-price {
+                font-size: 1.3rem;
+            }
+            .modal-content {
+                padding: 1.5rem;
+            }
+            .close-button {
+                font-size: 2.5rem;
+                top: 10px;
+                right: 20px;
+            }
+            .modal-body h2 {
+                font-size: 1.6rem;
+            }
+            .amenities {
+                grid-template-columns: 1fr; /* Una columna en móviles */
+                margin-bottom: 1rem;
+            }
+            .modal-links {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .modal-links a {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav button {
+                width: 100%;
+                margin-bottom: 0.8rem;
+            }
+            nav {
+                flex-direction: column;
+                align-items: center;
+                display: flex;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <img src="img/logo.png" alt="Nehuel Sur Logo" style="height: 50px;">
-    <h1>Bienvenido a Nehuel Sur</h1>
-    <p>Alquiler Temporario en toda Argentina</p>
-  </header>
-  <img src="img/header.png" alt="Imagen Header" style="width: 100%; max-height: 300px; object-fit: cover;">
-  <nav>
-    <button id="btn-departamentos" onclick="filtrar('departamento')">Departamentos</button>
-    <button id="btn-cabanas" onclick="filtrar('cabaña')">Cabañas</button>
-  </nav>
-  <div class="galeria" id="galeria"></div>
-  <div id="modal" class="modal" onclick="cerrarModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="document.getElementById('modal').style.display='none'">×</span>
-      <div id="modal-body"></div>
-    </div>
-  </div>
-  <footer>
-    <p>Contacto: <a href="https://wa.me/542612640766" target="_blank">WhatsApp</a> | <a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank">Facebook</a></p>
-  </footer>
+    <header>
+        <img src="img/logo.png" alt="Nehuel Sur Logo">
+        <h1>Bienvenido a Nehuel Sur</h1>
+        <p>Alquiler Temporario en toda Argentina</p>
+    </header>
+    <img src="img/header.png" alt="Imagen Header" style="width: 100%; max-height: 300px; object-fit: cover;">
+    <nav>
+        <button id="btn-departamentos" onclick="filtrar('departamento')">Departamentos</button>
+        <button id="btn-cabanas" onclick="filtrar('cabaña')">Cabañas</button>
+    </nav>
+    <div class="galeria" id="galeria"></div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <div id="modal" class="modal" onclick="cerrarModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-button" onclick="cerrarModalManual()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
 
-  <script>
-    const datos = {
-      "contacto": {
-        "whatsapp": "+542612640766",
-        "facebook": "https://www.facebook.com/profile.php?id=61577311958402"
-      },
-      "propiedades": [
-        {
-          "tipo": "departamento",
-          "titulo": "Departamento Moderno en el Centro de Mendoza",
-          "descripcion": "Hermoso departamento totalmente equipado con dos dormitorios, cocina americana, baño completo y balcón privado. Ideal para parejas o familias pequeñas.",
-          "ubicacion": {
-            "latitud": -32.8895,
-            "longitud": -68.8456
-          },
-          "direccion": "Av. Independencia 123, Mendoza, Argentina",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+1",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+2",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+3"
-          ],
-          "link_booking": "https://booking.com/departamento-mendoza-123",
-          "amenities": [
-            "Wi-Fi Gratis",
-            "Aire Acondicionado",
-            "Cocina Equipada",
-            "Ascensor",
-            "Estacionamiento Seguro"
-          ]
-        },
-        {
-          "tipo": "departamento",
-          "titulo": "Departamento Familiar con Vista al Parque",
-          "descripcion": "Espacioso departamento para hasta 5 personas, con tres dormitorios, amplia sala de estar y terraza privada con vistas al parque principal.",
-          "ubicacion": {
-            "latitud": -32.8901,
-            "longitud": -68.8350
-          },
-          "direccion": "San Martín 456, Mendoza, Argentina",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+4",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+5",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+6"
-          ],
-          "link_booking": "https://booking.com/departamento-mendoza-456",
-          "amenities": [
-            "Terraza Privada",
-            "Wi-Fi",
-            "Lavadora",
-            "Televisión por Cable",
-            "Cuna para bebé"
-          ]
-        },
-        {
-          "tipo": "departamento",
-          "titulo": "Loft Estilo Loft en Barrio Arizu",
-          "descripcion": "Diseño moderno y minimalista en pleno corazón del Barrio Arizu. Ideal para viajeros solos o parejas. Cuenta con una cama matrimonial y sofá cama.",
-          "ubicacion": {
-            "latitud": -32.8930,
-            "longitud": -68.8400
-          },
-          "direccion": "Arizu 789, Mendoza, Argentina",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Arizu+1",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Arizu+2",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Arizu+3"
-          ],
-          "link_booking": "https://booking.com/departamento-arizu-789",
-          "amenities": [
-            "Desayuno Incluido",
-            "Aire Acondicionado",
-            "Bañera de Hidromasaje",
-            "Mascotas Permitidas",
-            "Piscina Compartida"
-          ]
-        },
-        {
-          "tipo": "departamento",
-          "titulo": "Departamento Ejecutivo con Gimnasio",
-          "descripcion": "Perfecto para viajes de negocios. Cuenta con escritorio, conexión rápida a internet, gimnasio privado y acceso directo a transporte público.",
-          "ubicacion": {
-            "latitud": -32.8860,
-            "longitud": -68.8410
-          },
-          "direccion": "Las Heras 101, Mendoza, Argentina",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Her+1",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Her+2",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Her+3"
-          ],
-          "link_booking": "https://booking.com/departamento-lasher-101",
-          "amenities": [
-            "Gimnasio",
-            "Sala de Reuniones",
-            "Wi-Fi Rápido",
-            "Servicio de Limpieza Diario",
-            "Zona Tranquila"
-          ]
-        },
-        {
-          "tipo": "departamento",
-          "titulo": "Departamento frente al Cerro de la Gloria",
-          "descripcion": "Vistas espectaculares al cerro desde el balcón. Dos habitaciones, cocina completa, baño privado y espacio ideal para descansar después de excursiones.",
-          "ubicacion": {
-            "latitud": -32.8910,
-            "longitud": -68.8200
-          },
-          "direccion": "Chacabuco 202, Mendoza, Argentina",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Cerro+1",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Cerro+2",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Cerro+3"
-          ],
-          "link_booking": "https://booking.com/departamento-chacabuco-202",
-          "amenities": [
-            "Vistas Panorámicas",
-            "Balcón Privado",
-            "Cocina Completa",
-            "Ventiladores de Techo",
-            "Planta Baja"
-          ]
-        },
-        {
-          "tipo": "departamento",
-          "titulo": "Departamento Premium en Zona Comercial",
-          "descripcion": "Ubicado en zona comercial, cerca de centros comerciales y restaurantes. Dos dormitorios, baños completos, aire acondicionado y estacionamiento propio.",
-          "ubicacion": {
-            "latitud": -32.8880,
-            "longitud": -68.8500
-          },
-          "direccion": "Belgrano 303, Mendoza, Argentina",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Comercial+1",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Comercial+2",
-            "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Comercial+3"
-          ],
-          "link_booking": "https://booking.com/departamento-belgrano-303",
-          "amenities": [
-            "Cerca de Centros Comerciales",
-            "Estacionamiento Propio",
-            "TV Smart",
-            "Lavadora",
-            "Cafetera"
-          ]
-        },
-        {
-          "tipo": "cabaña",
-          "titulo": "Cabaña Rústica en el Valle de Uco",
-          "descripcion": "Cabaña acogedora rodeada de naturaleza, perfecta para desconectar. Cuenta con dos habitaciones, living comedor, chimenea, baño privado y parrilla exterior.",
-          "ubicacion": {
-            "latitud": -33.1330,
-            "longitud": -68.4430
-          },
-          "direccion": "Ruta Provincial 92 km 15, Tupungato, Mendoza",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Uco+1",
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Uco+2",
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Uco+3"
-          ],
-          "link_booking": "https://booking.com/cabania-valle-ucu-456",
-          "amenities": [
-            "Chimenea",
-            "Parrilla",
-            "Wi-Fi",
-            "Vista a la Montaña",
-            "Área de Fogón"
-          ]
-        },
-        {
-          "tipo": "cabaña",
-          "titulo": "Cabaña de Lujo con Jacuzzi Exterior",
-          "descripcion": "Exclusiva cabaña con jacuzzi al aire libre, sauna privado, dos dormitorios y cocina completa. Ideal para escapadas románticas o vacaciones familiares.",
-          "ubicacion": {
-            "latitud": -33.1500,
-            "longitud": -68.4500
-          },
-          "direccion": "Camino a Uspallata s/n, Tunuyán, Mendoza",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Jacuzzi+1",
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Jacuzzi+2",
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Jacuzzi+3"
-          ],
-          "link_booking": "https://booking.com/cabania-jacuzzi-tunuyan",
-          "amenities": [
-            "Jacuzzi Exterior",
-            "Sauna Privado",
-            "Cocina Completa",
-            "Barbacoa",
-            "Jardín Privado"
-          ]
-        },
-        {
-          "tipo": "cabaña",
-          "titulo": "Cabaña Campestre con Huerta Orgánica",
-          "descripcion": "Ideal para amantes de la vida rural. Tiene huerta orgánica propia, fogón exterior, dos habitaciones y entorno natural ideal para niños.",
-          "ubicacion": {
-            "latitud": -33.1000,
-            "longitud": -68.4000
-          },
-          "direccion": "Ruta 94 S, San Carlos, Mendoza",
-          "imagenes": [
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Huerta+1",
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Huerta+2",
-            "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Huerta+3"
-          ],
-          "link_booking": "https://booking.com/cabania-san-carlos-huerta",
-          "amenities": [
-            "Huerta Orgánica",
-            "Fogón Exterior",
-            "Parque Infantil",
-            "Mascotas Bienvenidas",
-            "Aire Acondicionado"
-          ]
-        }
-      ]
-    };
+    <footer>
+        <p>Contacto: <a href="https://wa.me/542612640766" target="_blank">WhatsApp</a> | <a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank">Facebook</a></p>
+    </footer>
 
-    const propiedades = datos.propiedades;
-    const galeria = document.getElementById("galeria");
-    let currentMap = null; // Variable para almacenar la instancia del mapa Leaflet
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    function crearCard(prop, i) {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <img src="${prop.imagenes[0]}" alt="${prop.titulo}">
-        <div class="card-body">
-          <h3>${prop.titulo}</h3>
-          <p>${prop.descripcion.substring(0, 100)}...</p>
-          <button onclick="verDetalle(${i})">Ver más</button>
-        </div>`;
-      return card;
-    }
+    <script>
+        const datos = {
+            "contacto": {
+                "whatsapp": "+542612640766",
+                "facebook": "https://www.facebook.com/profile.php?id=61577311958402"
+            },
+            "propiedades": [
+                {
+                    "tipo": "departamento",
+                    "titulo": "Departamento Moderno en el Centro de Mendoza",
+                    "descripcion": "Hermoso departamento totalmente equipado con dos dormitorios, cocina americana, baño completo y balcón privado. Ideal para parejas o familias pequeñas. Disfruta de la comodidad y cercanía a los principales atractivos de la ciudad.",
+                    "ubicacion": {
+                        "latitud": -32.8895,
+                        "longitud": -68.8456
+                    },
+                    "direccion": "Av. Independencia 123, Mendoza, Argentina",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Mza+1",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Mza+2",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Mza+3"
+                    ],
+                    "link_booking": "https://booking.com/departamento-mendoza-123",
+                    "precio": 80000,
+                    "amenities": [
+                        "Wi-Fi Gratis",
+                        "Aire Acondicionado",
+                        "Cocina Equipada",
+                        "Ascensor",
+                        "Estacionamiento Seguro",
+                        "Smart TV"
+                    ]
+                },
+                {
+                    "tipo": "departamento",
+                    "titulo": "Departamento Familiar con Vista al Parque",
+                    "descripcion": "Espacioso departamento para hasta 5 personas, con tres dormitorios, amplia sala de estar y terraza privada con vistas al parque principal. Ideal para familias que buscan confort y tranquilidad.",
+                    "ubicacion": {
+                        "latitud": -32.8901,
+                        "longitud": -68.8350
+                    },
+                    "direccion": "San Martín 456, Mendoza, Argentina",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Mza+4",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Mza+5",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Mza+6"
+                    ],
+                    "link_booking": "https://booking.com/departamento-mendoza-456",
+                    "precio": 95000,
+                    "amenities": [
+                        "Terraza Privada",
+                        "Wi-Fi",
+                        "Lavadora",
+                        "Televisión por Cable",
+                        "Cuna para bebé",
+                        "Calefacción central"
+                    ]
+                },
+                {
+                    "tipo": "departamento",
+                    "titulo": "Loft Estilo Loft en Barrio Arizu",
+                    "descripcion": "Diseño moderno y minimalista en pleno corazón del Barrio Arizu. Ideal para viajeros solos o parejas. Cuenta con una cama matrimonial y sofá cama, perfecto para una escapada romántica.",
+                    "ubicacion": {
+                        "latitud": -32.8930,
+                        "longitud": -68.8400
+                    },
+                    "direccion": "Arizu 789, Mendoza, Argentina",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Arizu+1",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Arizu+2",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Arizu+3"
+                    ],
+                    "link_booking": "https://booking.com/departamento-arizu-789",
+                    "precio": 70000,
+                    "amenities": [
+                        "Desayuno Incluido",
+                        "Aire Acondicionado",
+                        "Bañera de Hidromasaje",
+                        "Mascotas Permitidas (previa consulta)",
+                        "Piscina Compartida",
+                        "Servicio de limpieza"
+                    ]
+                },
+                {
+                    "tipo": "departamento",
+                    "titulo": "Departamento Ejecutivo con Gimnasio",
+                    "descripcion": "Perfecto para viajes de negocios. Cuenta con escritorio, conexión rápida a internet, gimnasio privado y acceso directo a transporte público. Moderno y funcional.",
+                    "ubicacion": {
+                        "latitud": -32.8860,
+                        "longitud": -68.8410
+                    },
+                    "direccion": "Las Heras 101, Mendoza, Argentina",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Her+1",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Her+2",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Her+3"
+                    ],
+                    "link_booking": "https://booking.com/departamento-lasher-101",
+                    "precio": 85000,
+                    "amenities": [
+                        "Gimnasio",
+                        "Sala de Reuniones",
+                        "Wi-Fi Rápido",
+                        "Servicio de Limpieza Diario",
+                        "Zona Tranquila",
+                        "Cafetera Nespresso"
+                    ]
+                },
+                {
+                    "tipo": "departamento",
+                    "titulo": "Departamento frente al Cerro de la Gloria",
+                    "descripcion": "Vistas espectaculares al cerro desde el balcón. Dos habitaciones, cocina completa, baño privado y espacio ideal para descansar después de excursiones y paseos por la montaña.",
+                    "ubicacion": {
+                        "latitud": -32.8910,
+                        "longitud": -68.8200
+                    },
+                    "direccion": "Chacabuco 202, Mendoza, Argentina",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Cerro+1",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Cerro+2",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Cerro+3"
+                    ],
+                    "link_booking": "https://booking.com/departamento-chacabuco-202",
+                    "precio": 78000,
+                    "amenities": [
+                        "Vistas Panorámicas",
+                        "Balcón Privado",
+                        "Cocina Completa",
+                        "Ventiladores de Techo",
+                        "Planta Baja",
+                        "Jardín"
+                    ]
+                },
+                {
+                    "tipo": "departamento",
+                    "titulo": "Departamento Premium en Zona Comercial",
+                    "descripcion": "Ubicado en zona comercial, cerca de centros comerciales y restaurantes. Dos dormitorios, baños completos, aire acondicionado y estacionamiento propio. Ideal para ir de compras y disfrutar la vida nocturna.",
+                    "ubicacion": {
+                        "latitud": -32.8880,
+                        "longitud": -68.8500
+                    },
+                    "direccion": "Belgrano 303, Mendoza, Argentina",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Comercial+1",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Comercial+2",
+                        "https://via.placeholder.com/600x400/00796b/ffffff?text=Depto+Comercial+3"
+                    ],
+                    "link_booking": "https://booking.com/departamento-belgrano-303",
+                    "precio": 90000,
+                    "amenities": [
+                        "Cerca de Centros Comerciales",
+                        "Estacionamiento Propio",
+                        "TV Smart",
+                        "Lavadora",
+                        "Cafetera",
+                        "Seguridad 24hs"
+                    ]
+                },
+                {
+                    "tipo": "cabaña",
+                    "titulo": "Cabaña Rústica en el Valle de Uco",
+                    "descripcion": "Cabaña acogedora rodeada de naturaleza, perfecta para desconectar. Cuenta con dos habitaciones, living comedor, chimenea, baño privado y parrilla exterior. Disfruta de la tranquilidad del campo.",
+                    "ubicacion": {
+                        "latitud": -33.1330,
+                        "longitud": -68.4430
+                    },
+                    "direccion": "Ruta Provincial 92 km 15, Tupungato, Mendoza",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Uco+1",
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Uco+2",
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Uco+3"
+                    ],
+                    "link_booking": "https://booking.com/cabania-valle-ucu-456",
+                    "precio": 120000,
+                    "amenities": [
+                        "Chimenea",
+                        "Parrilla",
+                        "Wi-Fi",
+                        "Vista a la Montaña",
+                        "Área de Fogón",
+                        "Sendero de trekking"
+                    ]
+                },
+                {
+                    "tipo": "cabaña",
+                    "titulo": "Cabaña de Lujo con Jacuzzi Exterior",
+                    "descripcion": "Exclusiva cabaña con jacuzzi al aire libre, sauna privado, dos dormitorios y cocina completa. Ideal para escapadas románticas o vacaciones familiares. Un lujo en medio de la naturaleza.",
+                    "ubicacion": {
+                        "latitud": -33.1500,
+                        "longitud": -68.4500
+                    },
+                    "direccion": "Camino a Uspallata s/n, Tunuyán, Mendoza",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Jacuzzi+1",
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Jacuzzi+2",
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Jacuzzi+3"
+                    ],
+                    "link_booking": "https://booking.com/cabania-jacuzzi-tunuyan",
+                    "precio": 180000,
+                    "amenities": [
+                        "Jacuzzi Exterior",
+                        "Sauna Privado",
+                        "Cocina Completa",
+                        "Barbacoa",
+                        "Jardín Privado",
+                        "Servicio de chef (opcional)"
+                    ]
+                },
+                {
+                    "tipo": "cabaña",
+                    "titulo": "Cabaña Campestre con Huerta Orgánica",
+                    "descripcion": "Ideal para amantes de la vida rural. Tiene huerta orgánica propia, fogón exterior, dos habitaciones y entorno natural ideal para niños. Conecta con la naturaleza y disfruta de productos frescos.",
+                    "ubicacion": {
+                        "latitud": -33.1000,
+                        "longitud": -68.4000
+                    },
+                    "direccion": "Ruta 94 S, San Carlos, Mendoza",
+                    "imagenes": [
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Huerta+1",
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Huerta+2",
+                        "https://via.placeholder.com/600x400/004d40/ffffff?text=Cabaña+Huerta+3"
+                    ],
+                    "link_booking": "https://booking.com/cabania-san-carlos-huerta",
+                    "precio": 100000,
+                    "amenities": [
+                        "Huerta Orgánica",
+                        "Fogón Exterior",
+                        "Parque Infantil",
+                        "Mascotas Bienvenidas",
+                        "Aire Acondicionado",
+                        "Bicicletas disponibles"
+                    ]
+                }
+            ]
+        };
 
-    function renderGaleria(filtro) {
-      galeria.innerHTML = "";
-      const buttons = document.querySelectorAll('nav button');
-      buttons.forEach(button => button.classList.remove('active'));
+        const propiedades = datos.propiedades;
+        const galeria = document.getElementById("galeria");
+        let currentMap = null; // Variable para almacenar la instancia del mapa Leaflet
 
-      propiedades.forEach((prop, i) => {
-        if (prop.tipo === filtro) {
-          galeria.appendChild(crearCard(prop, i));
-        }
-      });
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 }).format(price);
+        }
 
-      // Activar el botón correspondiente
-      const activeButton = document.getElementById(`btn-${filtro}`);
-      if (activeButton) {
-        activeButton.classList.add('active');
-      }
-    }
+        function crearCard(prop, i) {
+            const card = document.createElement("div");
+            card.className = "card";
 
-    function verDetalle(i) {
-      const prop = propiedades[i];
-      const modal = document.getElementById("modal");
-      const body = document.getElementById("modal-body");
-      const imagenes = prop.imagenes.map(src => `<img src="${src}" alt="${prop.titulo}" style="width:100%; margin:5px 0; border-radius: 0.3rem;">`).join('');
-      const amenities = prop.amenities.map(am => `<li>${am}</li>`).join('');
-      const mensaje = encodeURIComponent(`Hola! Estoy interesado en la propiedad: ${prop.titulo}. ¿Me puedes dar más información?`);
+            const precioOriginal = prop.precio;
+            const precioConDescuento = precioOriginal * 0.70; // 30% de descuento
+            const precioOriginalFormateado = formatPrice(precioOriginal);
+            const precioConDescuentoFormateado = formatPrice(precioConDescuento);
 
-      body.innerHTML = `
-        <h2>${prop.titulo}</h2>
-        <p><strong>Dirección:</strong> ${prop.direccion}</p>
-        ${imagenes}
-        <p>${prop.descripcion}</p>
-        <h3>Comodidades:</h3>
-        <ul class="amenities">${amenities}</ul>
-        <p><a href="${prop.link_booking}" target="_blank">Ver disponibilidad en Booking</a></p>
-        <p><a href="https://wa.me/${datos.contacto.whatsapp}?text=${mensaje}" target="_blank">Reservar o consultar por WhatsApp</a></p>
-        <div id="mapaModal" style="height: 350px;"></div>       `;
-      modal.style.display = "flex";
+            card.innerHTML = `
+                <img src="${prop.imagenes[0]}" alt="${prop.titulo}">
+                <div class="card-body">
+                    <div>
+                        <h3>${prop.titulo}</h3>
+                        <p>${prop.descripcion.substring(0, 120)}...</p>
+                        <div class="price-info">
+                            <span class="old-price">${precioOriginalFormateado}</span>
+                            <span class="current-price">${precioConDescuentoFormateado}</span>
+                        </div>
+                    </div>
+                    <button onclick="verDetalle(${i})">Ver más</button>
+                </div>`;
+            return card;
+        }
 
-      // Inicializar el mapa Leaflet DENTRO del modal una vez que esté visible
-      // Usamos setTimeout para asegurar que el DOM se actualizó y el div del mapa es visible.
-      setTimeout(() => {
-        // Destruir el mapa existente si lo hay para evitar errores de duplicación
-        if (currentMap) {
-          currentMap.remove();
-        }
+        function renderGaleria(filtro) {
+            galeria.innerHTML = "";
+            const buttons = document.querySelectorAll('nav button');
+            buttons.forEach(button => button.classList.remove('active'));
 
-        // Crear el mapa
-        const lat = prop.ubicacion.latitud;
-        const lon = prop.ubicacion.longitud;
-        currentMap = L.map('mapaModal').setView([lat, lon], 15); // 'mapaModal' es el ID del div
+            propiedades.forEach((prop, i) => {
+                if (prop.tipo === filtro) {
+                    galeria.appendChild(crearCard(prop, i));
+                }
+            });
 
-        // Añadir una capa de tiles (OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(currentMap);
+            const activeButton = document.getElementById(`btn-${filtro}`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
 
-        // Añadir un marcador
-        L.marker([lat, lon]).addTo(currentMap)
-          .bindPopup(`<b>${prop.titulo}</b><br>${prop.direccion}`).openPopup();
+        function verDetalle(i) {
+            const prop = propiedades[i];
+            const modal = document.getElementById("modal");
+            const body = document.getElementById("modal-body");
+            const imagenes = prop.imagenes.map(src => `<img src="${src}" alt="${prop.titulo}">`).join('');
+            const amenities = prop.amenities.map(am => `<li>${am}</li>`).join('');
+            const mensaje = encodeURIComponent(`Hola! Estoy interesado en la propiedad: ${prop.titulo}. ¿Me puedes dar más información sobre ella?`);
 
-        // Invalida el tamaño del mapa para asegurar que se renderice correctamente en el modal
-        currentMap.invalidateSize();
+            const precioOriginal = prop.precio;
+            const precioConDescuento = precioOriginal * 0.70; // 30% de descuento
+            const precioOriginalFormateado = formatPrice(precioOriginal);
+            const precioConDescuentoFormateado = formatPrice(precioConDescuento);
 
-      }, 100); // Pequeño retraso para asegurar que el modal esté completamente renderizado
-    }
+            body.innerHTML = `
+                <h2>${prop.titulo}</h2>
+                <p><strong>Dirección:</strong> ${prop.direccion}</p>
+                <div class="price-info">
+                    <span class="old-price">${precioOriginalFormateado}</span>
+                    <span class="current-price">${precioConDescuentoFormateado} (30% OFF)</span>
+                </div>
+                <div class="modal-images">
+                    ${imagenes}
+                </div>
+                <p>${prop.descripcion}</p>
+                <h3>Comodidades:</h3>
+                <ul class="amenities">${amenities}</ul>
+                <div id="mapaModal"></div> <div class="modal-links">
+                    <a href="${prop.link_booking}" target="_blank">Ver disponibilidad en Booking</a>
+                    <a href="https://wa.me/${datos.contacto.whatsapp}?text=${mensaje}" target="_blank">Reservar o consultar por WhatsApp</a>
+                </div>
+            `;
+            
+            modal.style.display = "flex";
+            // Añadir la clase para la animación del modal
+            setTimeout(() => {
+                modal.classList.add('is-open');
+            }, 10); // Pequeño retraso para que la transición se aplique
 
-    function cerrarModal(e) {
-      if (e.target.id === 'modal') {
-        document.getElementById('modal').style.display = 'none';
-        // Destruir el mapa cuando se cierra el modal para liberar recursos
-        if (currentMap) {
-          currentMap.remove();
-          currentMap = null;
-        }
-      }
-    }
 
-    function filtrar(tipo) {
-      renderGaleria(tipo);
-    }
+            // Inicializar el mapa Leaflet DENTRO del modal una vez que esté visible
+            setTimeout(() => {
+                // Destruir el mapa existente si lo hay para evitar errores de duplicación
+                if (currentMap) {
+                    currentMap.remove();
+                    currentMap = null; // Limpiar la referencia
+                }
 
-    // Cargar por defecto los departamentos al inicio y activar el botón
-    document.addEventListener('DOMContentLoaded', () => {
-      filtrar('departamento');
-    });
-  </script>
+                const lat = prop.ubicacion.latitud;
+                const lon = prop.ubicacion.longitud;
+                
+                // Asegurarse de que el contenedor del mapa exista antes de inicializar
+                const mapaContainer = document.getElementById('mapaModal');
+                if (mapaContainer) {
+                    currentMap = L.map('mapaModal').setView([lat, lon], 15); // 'mapaModal' es el ID del div
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(currentMap);
+
+                    L.marker([lat, lon]).addTo(currentMap)
+                        .bindPopup(`<b>${prop.titulo}</b><br>${prop.direccion}`).openPopup();
+
+                    currentMap.invalidateSize(); // Invalida el tamaño del mapa para asegurar que se renderice correctamente
+                }
+            }, 150); // Aumentado el retraso para mayor seguridad en la carga del mapa
+        }
+
+        function cerrarModal(e) {
+            // Cierra el modal si se hace clic fuera del contenido
+            if (e.target.id === 'modal') {
+                const modal = document.getElementById('modal');
+                modal.classList.remove('is-open');
+                modal.addEventListener('transitionend', function handler() {
+                    modal.style.display = 'none';
+                    modal.removeEventListener('transitionend', handler);
+                    // Destruir el mapa cuando se cierra el modal
+                    if (currentMap) {
+                        currentMap.remove();
+                        currentMap = null;
+                    }
+                });
+            }
+        }
+
+        // Función para cerrar el modal manualmente desde el botón "x"
+        function cerrarModalManual() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('is-open');
+            modal.addEventListener('transitionend', function handler() {
+                modal.style.display = 'none';
+                modal.removeEventListener('transitionend', handler);
+                // Destruir el mapa cuando se cierra el modal
+                if (currentMap) {
+                    currentMap.remove();
+                    currentMap = null;
+                }
+            });
+        }
+
+        function filtrar(tipo) {
+            renderGaleria(tipo);
+        }
+
+        // Cargar por defecto los departamentos al inicio y activar el botón
+        document.addEventListener('DOMContentLoaded', () => {
+            filtrar('departamento');
+        });
+    </script>
 </body>
 </html>
