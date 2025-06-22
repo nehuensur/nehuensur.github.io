@@ -1,313 +1,369 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nehuel Sur - Alquiler Temporario</title>
-  <style>
-    body { font-family: sans-serif; margin: 0; background: #f9f9f9; }
-    header { background: #004d40; color: white; padding: 1rem; text-align: center; }
-    nav { text-align: center; margin: 1rem 0; }
-    nav button { margin: 0.5rem; padding: 0.5rem 1rem; cursor: pointer; }
-    .galeria { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding: 1rem; }
-    .card { background: white; border-radius: 0.5rem; box-shadow: 0 0 10px rgba(0,0,0,0.1); overflow: hidden; width: 300px; }
-    .card img { width: 100%; height: 200px; object-fit: cover; }
-    .card-body { padding: 1rem; }
-    .amenities { font-size: 0.9rem; color: #555; margin: 0.5rem 0; }
-    .modal { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 1rem; width: 90%; max-width: 600px; border-radius: 0.5rem; overflow-y: auto; max-height: 90vh; }
-    .close { float: right; cursor: pointer; font-size: 1.2rem; }
-    iframe { width: 100%; height: 300px; border: 0; }
-    footer { background: #004d40; color: white; text-align: center; padding: 1rem; margin-top: 2rem; }
-    a { color: #00796b; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nehuel Sur - Alquiler Temporario</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; background: #f9f9f9; }
+    header { background: #004d40; color: white; padding: 1rem; text-align: center; }
+    nav { text-align: center; margin: 1rem 0; }
+    nav button {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 0.3rem;
+      transition: background-color 0.3s ease;
+    }
+    nav button:hover {
+      background-color: #004d40;
+    }
+    .galeria { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding: 1rem; }
+    .card { background: white; border-radius: 0.5rem; box-shadow: 0 0 10px rgba(0,0,0,0.1); overflow: hidden; width: 300px; }
+    .card img { width: 100%; height: 200px; object-fit: cover; }
+    .card-body { padding: 1rem; }
+    .card-body h3 { margin-top: 0; color: #004d40; }
+    .card-body button {
+      background-color: #00796b;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .card-body button:hover {
+      background-color: #004d40;
+    }
+    .amenities { font-size: 0.9rem; color: #555; margin: 0.5rem 0; list-style: none; padding-left: 0; }
+    .amenities li::before { content: "✅ "; } /* Estilo para los amenities */
+    .modal { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+    .modal-content {
+      background: white;
+      padding: 1rem;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 0.5rem;
+      overflow-y: auto;
+      max-height: 90vh;
+      position: relative; /* Para posicionar el botón de cerrar */
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #333;
+    }
+    .close:hover {
+      color: #000;
+    }
+    iframe { width: 100%; height: 300px; border: 0; margin-top: 1rem; }
+    footer { background: #004d40; color: white; text-align: center; padding: 1rem; margin-top: 2rem; }
+    footer a { color: #80cbc4; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    a { color: #00796b; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-  <header>
-    <img src="img/logo.png" alt="Nehuel Sur Logo" style="height: 50px;">
-    <h1>Bienvenido a Nehuel Sur</h1>
-    <p>Alquiler Temporario en toda Argentina</p>
-  </header>
-  <img src="img/header.png" alt="Imagen Header" style="width: 100%; max-height: 300px; object-fit: cover;">  <nav>
-    <button onclick="filtrar('todos')">Todos</button>
-    <button onclick="filtrar('departamento')">Departamentos</button>
-    <button onclick="filtrar('cabaña')">Cabañas</button>
-  </nav>  <div class="galeria" id="galeria"></div>  <div id="modal" class="modal" onclick="cerrarModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="document.getElementById('modal').style.display='none'">&times;</span>
-      <div id="modal-body"></div>
-    </div>
-  </div>  <footer>
-    <p>Contacto: <a href="https://wa.me/542612640766" target="_blank">WhatsApp</a> | <a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank">Facebook</a></p>
-  </footer>  <script>
-    const datos = {"contacto":{"whatsapp":"+542612640766","facebook":"https://www.facebook.com/profile.php?id=61577311958402"},"propiedades":const datos = {
-  "contacto": {
-    "whatsapp": "+542612640766",
-    "facebook": "https://www.facebook.com/profile.php?id=61577311958402"
-  },
-  "propiedades": [
-    {
-      "tipo": "departamento",
-      "titulo": "Departamento Moderno en el Centro de Mendoza",
-      "descripcion": "Hermoso departamento totalmente equipado con dos dormitorios, cocina americana, baño completo y balcón privado. Ideal para parejas o familias pequeñas.",
-      "ubicacion": {
-        "latitud": -32.8895,
-        "longitud": -68.8456
-      },
-      "direccion": "Av. Independencia 123, Mendoza, Argentina",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/depto1.jpg",
-        "https://ejemplo.com/imagenes/depto2.jpg",
-        "https://ejemplo.com/imagenes/depto3.jpg"
-      ],
-      "link_booking": "https://booking.com/departamento-mendoza-123",
-      "amenities": [
-        "Wi-Fi Gratis",
-        "Aire Acondicionado",
-        "Cocina Equipada",
-        "Ascensor",
-        "Estacionamiento Seguro"
-      ]
-    },
-    {
-      "tipo": "departamento",
-      "titulo": "Departamento Familiar con Vista al Parque",
-      "descripcion": "Espacioso departamento para hasta 5 personas, con tres dormitorios, amplia sala de estar y terraza privada con vistas al parque principal.",
-      "ubicacion": {
-        "latitud": -32.8901,
-        "longitud": -68.8350
-      },
-      "direccion": "San Martín 456, Mendoza, Argentina",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/depto4.jpg",
-        "https://ejemplo.com/imagenes/depto5.jpg",
-        "https://ejemplo.com/imagenes/depto6.jpg"
-      ],
-      "link_booking": "https://booking.com/departamento-mendoza-456",
-      "amenities": [
-        "Terraza Privada",
-        "Wi-Fi",
-        "Lavadora",
-        "Televisión por Cable",
-        "Cuna para bebé"
-      ]
-    },
-    {
-      "tipo": "departamento",
-      "titulo": "Loft Estilo Loft en Barrio Arizu",
-      "descripcion": "Diseño moderno y minimalista en pleno corazón del Barrio Arizu. Ideal para viajeros solos o parejas. Cuenta con una cama matrimonial y sofá cama.",
-      "ubicacion": {
-        "latitud": -32.8930,
-        "longitud": -68.8400
-      },
-      "direccion": "Arizu 789, Mendoza, Argentina",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/depto7.jpg",
-        "https://ejemplo.com/imagenes/depto8.jpg",
-        "https://ejemplo.com/imagenes/depto9.jpg"
-      ],
-      "link_booking": "https://booking.com/departamento-arizu-789",
-      "amenities": [
-        "Desayuno Incluido",
-        "Aire Acondicionado",
-        "Bañera de Hidromasaje",
-        "Mascotas Permitidas",
-        "Piscina Compartida"
-      ]
-    },
-    {
-      "tipo": "departamento",
-      "titulo": "Departamento Ejecutivo con Gimnasio",
-      "descripcion": "Perfecto para viajes de negocios. Cuenta con escritorio, conexión rápida a internet, gimnasio privado y acceso directo a transporte público.",
-      "ubicacion": {
-        "latitud": -32.8860,
-        "longitud": -68.8410
-      },
-      "direccion": "Las Heras 101, Mendoza, Argentina",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/depto10.jpg",
-        "https://ejemplo.com/imagenes/depto11.jpg",
-        "https://ejemplo.com/imagenes/depto12.jpg"
-      ],
-      "link_booking": "https://booking.com/departamento-lasher-101",
-      "amenities": [
-        "Gimnasio",
-        "Sala de Reuniones",
-        "Wi-Fi Rápido",
-        "Servicio de Limpieza Diario",
-        "Zona Tranquila"
-      ]
-    },
-    {
-      "tipo": "departamento",
-      "titulo": "Departamento frente al Cerro de la Gloria",
-      "descripcion": "Vistas espectaculares al cerro desde el balcón. Dos habitaciones, cocina completa, baño privado y espacio ideal para descansar después de excursiones.",
-      "ubicacion": {
-        "latitud": -32.8910,
-        "longitud": -68.8200
-      },
-      "direccion": "Chacabuco 202, Mendoza, Argentina",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/depto13.jpg",
-        "https://ejemplo.com/imagenes/depto14.jpg",
-        "https://ejemplo.com/imagenes/depto15.jpg"
-      ],
-      "link_booking": "https://booking.com/departamento-chacabuco-202",
-      "amenities": [
-        "Vistas Panorámicas",
-        "Balcón Privado",
-        "Cocina Completa",
-        "Ventiladores de Techo",
-        "Planta Baja"
-      ]
-    },
-    {
-      "tipo": "departamento",
-      "titulo": "Departamento Premium en Zona Comercial",
-      "descripcion": "Ubicado en zona comercial, cerca de centros comerciales y restaurantes. Dos dormitorios, baños completos, aire acondicionado y estacionamiento propio.",
-      "ubicacion": {
-        "latitud": -32.8880,
-        "longitud": -68.8500
-      },
-      "direccion": "Belgrano 303, Mendoza, Argentina",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/depto16.jpg",
-        "https://ejemplo.com/imagenes/depto17.jpg",
-        "https://ejemplo.com/imagenes/depto18.jpg"
-      ],
-      "link_booking": "https://booking.com/departamento-belgrano-303",
-      "amenities": [
-        "Cerca de Centros Comerciales",
-        "Estacionamiento Propio",
-        "TV Smart",
-        "Lavadora",
-        "Cafetera"
-      ]
-    },
-    {
-      "tipo": "cabaña",
-      "titulo": "Cabaña Rustica en el Valle de Uco",
-      "descripcion": "Cabaña acogedora rodeada de naturaleza, perfecta para desconectar. Cuenta con dos habitaciones, living comedor, chimenea, baño privado y parrilla exterior.",
-      "ubicacion": {
-        "latitud": -33.1330,
-        "longitud": -68.4430
-      },
-      "direccion": "Ruta Provincial 92 km 15, Tupungato, Mendoza",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/cabania1.jpg",
-        "https://ejemplo.com/imagenes/cabania2.jpg",
-        "https://ejemplo.com/imagenes/cabania3.jpg"
-      ],
-      "link_booking": "https://booking.com/cabania-valle-ucu-456",
-      "amenities": [
-        "Chimenea",
-        "Parrilla",
-        "Wi-Fi",
-        "Vista a la Montaña",
-        "Área de Fogón"
-      ]
-    },
-    {
-      "tipo": "cabaña",
-      "titulo": "Cabaña de Lujo con Jacuzzi Exterior",
-      "descripcion": "Exclusiva cabaña con jacuzzi al aire libre, sauna privado, dos dormitorios y cocina completa. Ideal para escapadas románticas o vacaciones familiares.",
-      "ubicacion": {
-        "latitud": -33.1500,
-        "longitud": -68.4500
-      },
-      "direccion": "Camino a Uspallata s/n, Tunuyán, Mendoza",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/cabania4.jpg",
-        "https://ejemplo.com/imagenes/cabania5.jpg",
-        "https://ejemplo.com/imagenes/cabania6.jpg"
-      ],
-      "link_booking": "https://booking.com/cabania-jacuzzi-tunuyan",
-      "amenities": [
-        "Jacuzzi Exterior",
-        "Sauna Privado",
-        "Cocina Completa",
-        "Barbacoa",
-        "Jardín Privado"
-      ]
-    },
-    {
-      "tipo": "cabaña",
-      "titulo": "Cabaña Campestre con Huerta Orgánica",
-      "descripcion": "Ideal para amantes de la vida rural. Tiene huerta orgánica propia, fogón exterior, dos habitaciones y entorno natural ideal para niños.",
-      "ubicacion": {
-        "latitud": -33.1000,
-        "longitud": -68.4000
-      },
-      "direccion": "Ruta 94 S, San Carlos, Mendoza",
-      "imagenes": [
-        "https://ejemplo.com/imagenes/cabania7.jpg",
-        "https://ejemplo.com/imagenes/cabania8.jpg",
-        "https://ejemplo.com/imagenes/cabania9.jpg"
-      ],
-      "link_booking": "https://booking.com/cabania-san-carlos-huerta",
-      "amenities": [
-        "Huerta Orgánica",
-        "Fogón Exterior",
-        "Parque Infantil",
-        "Mascotas Bienvenidas",
-        "Aire Acondicionado"
-      ]
-    }
-  ]
-};};
+  <header>
+    <img src="img/logo.png" alt="Nehuel Sur Logo" style="height: 50px;">
+    <h1>Bienvenido a Nehuel Sur</h1>
+    <p>Alquiler Temporario en toda Argentina</p>
+  </header>
+  <img src="img/header.png" alt="Imagen Header" style="width: 100%; max-height: 300px; object-fit: cover;">
+  <nav>
+    <button onclick="filtrar('todos')">Todos</button>
+    <button onclick="filtrar('departamento')">Departamentos</button>
+    <button onclick="filtrar('cabaña')">Cabañas</button>
+  </nav>
+  <div class="galeria" id="galeria"></div>
+  <div id="modal" class="modal" onclick="cerrarModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="close" onclick="document.getElementById('modal').style.display='none'">×</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+  <footer>
+    <p>Contacto: <a href="https://wa.me/542612640766" target="_blank">WhatsApp</a> | <a href="https://www.facebook.com/profile.php?id=61577311958402" target="_blank">Facebook</a></p>
+  </footer>
+  <script>
+    const datos = {
+  "contacto": {
+    "whatsapp": "+542612640766",
+    "facebook": "https://www.facebook.com/profile.php?id=61577311958402"
+  },
+  "propiedades": [
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento Moderno en el Centro de Mendoza",
+      "descripcion": "Hermoso departamento totalmente equipado con dos dormitorios, cocina americana, baño completo y balcón privado. Ideal para parejas o familias pequeñas.",
+      "ubicacion": {
+        "latitud": -32.8895,
+        "longitud": -68.8456
+      },
+      "direccion": "Av. Independencia 123, Mendoza, Argentina",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+1",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+2",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+3"
+      ],
+      "link_booking": "https://booking.com/departamento-mendoza-123",
+      "amenities": [
+        "Wi-Fi Gratis",
+        "Aire Acondicionado",
+        "Cocina Equipada",
+        "Ascensor",
+        "Estacionamiento Seguro"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento Familiar con Vista al Parque",
+      "descripcion": "Espacioso departamento para hasta 5 personas, con tres dormitorios, amplia sala de estar y terraza privada con vistas al parque principal.",
+      "ubicacion": {
+        "latitud": -32.8901,
+        "longitud": -68.8350
+      },
+      "direccion": "San Martín 456, Mendoza, Argentina",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+4",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+5",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Mza+6"
+      ],
+      "link_booking": "https://booking.com/departamento-mendoza-456",
+      "amenities": [
+        "Terraza Privada",
+        "Wi-Fi",
+        "Lavadora",
+        "Televisión por Cable",
+        "Cuna para bebé"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Loft Estilo Loft en Barrio Arizu",
+      "descripcion": "Diseño moderno y minimalista en pleno corazón del Barrio Arizu. Ideal para viajeros solos o parejas. Cuenta con una cama matrimonial y sofá cama.",
+      "ubicacion": {
+        "latitud": -32.8930,
+        "longitud": -68.8400
+      },
+      "direccion": "Arizu 789, Mendoza, Argentina",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Arizu+1",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Arizu+2",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Arizu+3"
+      ],
+      "link_booking": "https://booking.com/departamento-arizu-789",
+      "amenities": [
+        "Desayuno Incluido",
+        "Aire Acondicionado",
+        "Bañera de Hidromasaje",
+        "Mascotas Permitidas",
+        "Piscina Compartida"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento Ejecutivo con Gimnasio",
+      "descripcion": "Perfecto para viajes de negocios. Cuenta con escritorio, conexión rápida a internet, gimnasio privado y acceso directo a transporte público.",
+      "ubicacion": {
+        "latitud": -32.8860,
+        "longitud": -68.8410
+      },
+      "direccion": "Las Heras 101, Mendoza, Argentina",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Her+1",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Her+2",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Her+3"
+      ],
+      "link_booking": "https://booking.com/departamento-lasher-101",
+      "amenities": [
+        "Gimnasio",
+        "Sala de Reuniones",
+        "Wi-Fi Rápido",
+        "Servicio de Limpieza Diario",
+        "Zona Tranquila"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento frente al Cerro de la Gloria",
+      "descripcion": "Vistas espectaculares al cerro desde el balcón. Dos habitaciones, cocina completa, baño privado y espacio ideal para descansar después de excursiones.",
+      "ubicacion": {
+        "latitud": -32.8910,
+        "longitud": -68.8200
+      },
+      "direccion": "Chacabuco 202, Mendoza, Argentina",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Cerro+1",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Cerro+2",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Cerro+3"
+      ],
+      "link_booking": "https://booking.com/departamento-chacabuco-202",
+      "amenities": [
+        "Vistas Panorámicas",
+        "Balcón Privado",
+        "Cocina Completa",
+        "Ventiladores de Techo",
+        "Planta Baja"
+      ]
+    },
+    {
+      "tipo": "departamento",
+      "titulo": "Departamento Premium en Zona Comercial",
+      "descripcion": "Ubicado en zona comercial, cerca de centros comerciales y restaurantes. Dos dormitorios, baños completos, aire acondicionado y estacionamiento propio.",
+      "ubicacion": {
+        "latitud": -32.8880,
+        "longitud": -68.8500
+      },
+      "direccion": "Belgrano 303, Mendoza, Argentina",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Comercial+1",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Comercial+2",
+        "https://via.placeholder.com/300x200/00796b/ffffff?text=Depto+Comercial+3"
+      ],
+      "link_booking": "https://booking.com/departamento-belgrano-303",
+      "amenities": [
+        "Cerca de Centros Comerciales",
+        "Estacionamiento Propio",
+        "TV Smart",
+        "Lavadora",
+        "Cafetera"
+      ]
+    },
+    {
+      "tipo": "cabaña",
+      "titulo": "Cabaña Rústica en el Valle de Uco",
+      "descripcion": "Cabaña acogedora rodeada de naturaleza, perfecta para desconectar. Cuenta con dos habitaciones, living comedor, chimenea, baño privado y parrilla exterior.",
+      "ubicacion": {
+        "latitud": -33.1330,
+        "longitud": -68.4430
+      },
+      "direccion": "Ruta Provincial 92 km 15, Tupungato, Mendoza",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Uco+1",
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Uco+2",
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Uco+3"
+      ],
+      "link_booking": "https://booking.com/cabania-valle-ucu-456",
+      "amenities": [
+        "Chimenea",
+        "Parrilla",
+        "Wi-Fi",
+        "Vista a la Montaña",
+        "Área de Fogón"
+      ]
+    },
+    {
+      "tipo": "cabaña",
+      "titulo": "Cabaña de Lujo con Jacuzzi Exterior",
+      "descripcion": "Exclusiva cabaña con jacuzzi al aire libre, sauna privado, dos dormitorios y cocina completa. Ideal para escapadas románticas o vacaciones familiares.",
+      "ubicacion": {
+        "latitud": -33.1500,
+        "longitud": -68.4500
+      },
+      "direccion": "Camino a Uspallata s/n, Tunuyán, Mendoza",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Jacuzzi+1",
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Jacuzzi+2",
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Jacuzzi+3"
+      ],
+      "link_booking": "https://booking.com/cabania-jacuzzi-tunuyan",
+      "amenities": [
+        "Jacuzzi Exterior",
+        "Sauna Privado",
+        "Cocina Completa",
+        "Barbacoa",
+        "Jardín Privado"
+      ]
+    },
+    {
+      "tipo": "cabaña",
+      "titulo": "Cabaña Campestre con Huerta Orgánica",
+      "descripcion": "Ideal para amantes de la vida rural. Tiene huerta orgánica propia, fogón exterior, dos habitaciones y entorno natural ideal para niños.",
+      "ubicacion": {
+        "latitud": -33.1000,
+        "longitud": -68.4000
+      },
+      "direccion": "Ruta 94 S, San Carlos, Mendoza",
+      "imagenes": [
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Huerta+1",
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Huerta+2",
+        "https://via.placeholder.com/300x200/004d40/ffffff?text=Cabaña+Huerta+3"
+      ],
+      "link_booking": "https://booking.com/cabania-san-carlos-huerta",
+      "amenities": [
+        "Huerta Orgánica",
+        "Fogón Exterior",
+        "Parque Infantil",
+        "Mascotas Bienvenidas",
+        "Aire Acondicionado"
+      ]
+    }
+  ]
+};
 
-    const propiedades = datos.propiedades;
-    const galeria = document.getElementById("galeria");
+    const propiedades = datos.propiedades;
+    const galeria = document.getElementById("galeria");
 
-    function crearCard(prop, i) {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <img src="${prop.imagenes[0]}" alt="Imagen principal">
-        <div class="card-body">
-          <h3>${prop.titulo}</h3>
-          <p>${prop.descripcion}</p>
-          <button onclick="verDetalle(${i})">Ver más</button>
-        </div>`;
-      return card;
-    }
+    function crearCard(prop, i) {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${prop.imagenes[0]}" alt="${prop.titulo}">
+        <div class="card-body">
+          <h3>${prop.titulo}</h3>
+          <p>${prop.descripcion.substring(0, 100)}...</p>           <button onclick="verDetalle(${i})">Ver más</button>
+        </div>`;
+      return card;
+    }
 
-    function renderGaleria(filtro) {
-      galeria.innerHTML = "";
-      propiedades.forEach((prop, i) => {
-        if (filtro === 'todos' || prop.tipo === filtro) {
-          galeria.appendChild(crearCard(prop, i));
-        }
-      });
-    }
+    function renderGaleria(filtro) {
+      galeria.innerHTML = "";
+      propiedades.forEach((prop, i) => {
+        if (filtro === 'todos' || prop.tipo === filtro) {
+          galeria.appendChild(crearCard(prop, i));
+        }
+      });
+    }
 
-    function verDetalle(i) {
-      const prop = propiedades[i];
-      const modal = document.getElementById("modal");
-      const body = document.getElementById("modal-body");
-      const imagenes = prop.imagenes.map(src => `<img src="${src}" style="width:100%; margin:5px 0;">`).join('');
-      const amenities = prop.amenities.map(am => `<li>${am}</li>`).join('');
-      const mensaje = encodeURIComponent(`Hola! Estoy interesado en la propiedad: ${prop.titulo}`);
-      body.innerHTML = `
-        <h2>${prop.titulo}</h2>
-        <p><strong>Dirección:</strong> ${prop.direccion}</p>
-        ${imagenes}
-        <p>${prop.descripcion}</p>
-        <ul class="amenities">${amenities}</ul>
-        <p><a href="${prop.link_booking}" target="_blank">Ver en Booking</a></p>
-        <p><a href="https://wa.me/542612640766?text=${mensaje}" target="_blank">Reservar por WhatsApp</a></p>
-        <iframe src="https://maps.google.com/maps?q=${prop.ubicacion.latitud},${prop.ubicacion.longitud}&z=15&output=embed"></iframe>
-      `;
-      modal.style.display = "flex";
-    }
+    function verDetalle(i) {
+      const prop = propiedades[i];
+      const modal = document.getElementById("modal");
+      const body = document.getElementById("modal-body");
+      const imagenes = prop.imagenes.map(src => `<img src="${src}" alt="${prop.titulo}" style="width:100%; margin:5px 0; border-radius: 0.3rem;">`).join('');
+      const amenities = prop.amenities.map(am => `<li>${am}</li>`).join('');
+      const mensaje = encodeURIComponent(`Hola! Estoy interesado en la propiedad: ${prop.titulo}. ¿Me puedes dar más información?`);
+      body.innerHTML = `
+        <h2>${prop.titulo}</h2>
+        <p><strong>Dirección:</strong> ${prop.direccion}</p>
+        ${imagenes}
+        <p>${prop.descripcion}</p>
+        <h3>Comodidades:</h3>
+        <ul class="amenities">${amenities}</ul>
+        <p><a href="${prop.link_booking}" target="_blank">Ver disponibilidad en Booking</a></p>
+        <p><a href="https://wa.me/${datos.contacto.whatsapp}?text=${mensaje}" target="_blank">Reservar o consultar por WhatsApp</a></p>
+        <iframe src="https://maps.google.com/maps?q=${prop.ubicacion.latitud},${prop.ubicacion.longitud}&z=15&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      `;
+      modal.style.display = "flex";
+    }
 
-    function cerrarModal(e) {
-      if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none';
-    }
+    function cerrarModal(e) {
+      if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none';
+    }
 
-    function filtrar(tipo) {
-      renderGaleria(tipo);
-    }
+    function filtrar(tipo) {
+      renderGaleria(tipo);
+    }
 
-    renderGaleria('todos');
-  </script></body>
+    // Renderizar todas las propiedades al cargar la página
+    renderGaleria('todos');
+  </script>
+</body>
 </html>
