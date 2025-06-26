@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva - Nehuen Sur</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="date"] {
+            padding: 9px; /* Ajuste para que se vea similar a los otros inputs */
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://raw.githubusercontent.com/nehuensur/nehuensur.github.io/refs/heads/main/img/logo.png" alt="Logo Nehuen Sur">
+        </div>
+        <h1>Formulario de Reserva</h1>
+        <form id="reservationForm">
+            <div class="form-group">
+                <label for="tituloReserva">Título de la Reserva:</label>
+                <input type="text" id="tituloReserva" name="tituloReserva" required>
+            </div>
+            <div class="form-group">
+                <label for="precioNoche">Precio por Noche:</label>
+                <input type="number" id="precioNoche" name="precioNoche" min="0" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="fechaChecking">Fecha de Checking:</label>
+                <input type="date" id="fechaChecking" name="fechaChecking" required>
+            </div>
+            <div class="form-group">
+                <label for="fechaCheckout">Fecha de Checkout:</label>
+                <input type="date" id="fechaCheckout" name="fechaCheckout" required>
+                <div class="error-message" id="dateError">La fecha de checkout debe ser posterior a la fecha de checking.</div>
+            </div>
+            <div class="form-group">
+                <label for="nombreTitular">Nombre Completo del Titular:</label>
+                <input type="text" id="nombreTitular" name="nombreTitular" required>
+            </div>
+            <div class="form-group">
+                <label for="cantidadHuespedes">Cantidad de Huéspedes:</label>
+                <input type="number" id="cantidadHuespedes" name="cantidadHuespedes" min="1" required>
+            </div>
+            <button type="submit">Generar y Descargar Ticket</button>
+        </form>
+    </div>
+
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+
+        document.getElementById('reservationForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const tituloReserva = document.getElementById('tituloReserva').value;
+            const precioNoche = parseFloat(document.getElementById('precioNoche').value);
+            const fechaChecking = document.getElementById('fechaChecking').value;
+            const fechaCheckout = document.getElementById('fechaCheckout').value;
+            const nombreTitular = document.getElementById('nombreTitular').value;
+            const cantidadHuespedes = parseInt(document.getElementById('cantidadHuespedes').value);
+
+            const dateErrorDiv = document.getElementById('dateError');
+            const checkInDate = new Date(fechaChecking);
+            const checkOutDate = new Date(fechaCheckout);
+
+            if (checkOutDate <= checkInDate) {
+                dateErrorDiv.style.display = 'block';
+                return;
+            } else {
+                dateErrorDiv.style.display = 'none';
+            }
+
+            // Calcular cantidad de noches
+            const diffTime = Math.abs(checkOutDate - checkInDate);
+            const cantidadNoches = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // Aplicar 30% de descuento al precio por noche
+            const precioNocheConDescuento = precioNoche * 0.70; // 100% - 30% = 70%
+
+            // Calcular precio total
+            const precioTotal = precioNocheConDescuento * cantidadNoches;
+
+            const doc = new jsPDF();
+
+            // Cargar y añadir el logo
+            const img = new Image();
+            img.src = 'https://raw.githubusercontent.com/nehuensur/nehuensur.github.io/refs/heads/main/img/logo.png';
+            img.onload = function() {
+                doc.addImage(img, 'PNG', 15, 10, 50, 25); // x, y, width, height
+
+                doc.setFontSize(18);
+                doc.text('Ticket de Reserva', 105, 40, { align: 'center' }); // Título centrado
+
+                doc.setFontSize(12);
+                let yPos = 60;
+                const lineHeight = 10;
+
+                doc.text(`Nombre de la Reserva: ${tituloReserva}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Nombre del Titular: ${nombreTitular}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Fecha de Checking: ${fechaChecking}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Fecha de Checkout: ${fechaCheckout}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Cantidad de Noches: ${cantidadNoches}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Cantidad de Huéspedes: ${cantidadHuespedes}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Precio por Noche (con 30% de descuento): $${precioNocheConDescuento.toFixed(2)}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Precio Total: $${precioTotal.toFixed(2)}`, 20, yPos);
+
+                doc.save(`Reserva_NehuenSur_${tituloReserva.replace(/ /g, '_')}.pdf`);
+            };
+            img.onerror = function() {
+                console.error("Error al cargar la imagen del logo.");
+                // Si la imagen no carga, generar el PDF sin ella
+                doc.setFontSize(18);
+                doc.text('Ticket de Reserva', 105, 20, { align: 'center' }); // Título centrado
+
+                doc.setFontSize(12);
+                let yPos = 40;
+                const lineHeight = 10;
+
+                doc.text(`Nombre de la Reserva: ${tituloReserva}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Nombre del Titular: ${nombreTitular}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Fecha de Checking: ${fechaChecking}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Fecha de Checkout: ${fechaCheckout}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Cantidad de Noches: ${cantidadNoches}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Cantidad de Huéspedes: ${cantidadHuespedes}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Precio por Noche (con 30% de descuento): $${precioNocheConDescuento.toFixed(2)}`, 20, yPos);
+                yPos += lineHeight;
+                doc.text(`Precio Total: $${precioTotal.toFixed(2)}`, 20, yPos);
+
+                doc.save(`Reserva_NehuenSur_${tituloReserva.replace(/ /g, '_')}.pdf`);
+            };
+        });
+    </script>
+</body>
+</html
